@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DripChip_API.DAL\DripChip_API.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
