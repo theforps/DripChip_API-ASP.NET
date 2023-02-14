@@ -10,9 +10,9 @@ namespace DripChip_API.Service.Implementations;
 
 public class AccountService : IAccountService
 {
-    private readonly IAccountRepository<User> _userRepository;
+    private readonly IAccountRepository _userRepository;
 
-    public AccountService(IAccountRepository<User> userRepository)
+    public AccountService(IAccountRepository userRepository)
     {
         _userRepository = userRepository;
     }
