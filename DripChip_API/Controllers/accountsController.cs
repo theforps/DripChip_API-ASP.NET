@@ -1,6 +1,5 @@
 using DripChip_API.Domain.DTO;
 using DripChip_API.Service.Interfaces;
-using DripChip_API.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DripChip_API.Controllers
@@ -29,7 +28,7 @@ namespace DripChip_API.Controllers
 
             var response = await _accountService.GetUser(accountId);
 
-            if (response.StatusCode != Domain.Enums.StatusCode.OK)
+            if (response.StatusCode == Domain.Enums.StatusCode.AccountNotFound)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
