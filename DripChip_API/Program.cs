@@ -22,10 +22,11 @@ namespace Drip_chip_API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<IAccountRepository<User>, AccountRepository>();
+            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+            builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
             
             builder.Services.AddScoped<IAccountService, AccountService>();
-            
+            builder.Services.AddScoped<IAnimalService, AnimalService>();
             
             
             var app = builder.Build();
