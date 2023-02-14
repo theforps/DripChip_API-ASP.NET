@@ -5,7 +5,7 @@ using DripChip_API.Domain.Models;
 
 namespace DripChip_API.DAL.Repositories;
 
-public class AccountRepository : IAccountRepository<User>
+public class AccountRepository : IAccountRepository
 {
     private readonly ApplicationDbContext _db;
 
