@@ -37,9 +37,10 @@ namespace DripChip_API.Controllers
             return Ok(response.Data);
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("search")]
-        public ActionResult GetUserByParams([FromRoute] DTOUserSearch userSearch)
+        public ActionResult GetUserByParams([FromQuery] DTOUserSearch userSearch)
         {
             if (userSearch.from < 0 || userSearch.size <= 0)
             {
@@ -47,6 +48,11 @@ namespace DripChip_API.Controllers
             }
 
             var response = _accountService.GetUsersByParam(userSearch);
+
+            if (response.Data == null)
+            {
+                return Ok();
+            }
             
             return Ok(response.Data);
         }

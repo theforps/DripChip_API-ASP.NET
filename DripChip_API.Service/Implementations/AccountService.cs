@@ -61,9 +61,10 @@ public class AccountService : IAccountService
         try
         {
             var user = _userRepository.GetAll().Where(x =>
-                x.firstName.Contains(userSearch.firstName) &&
-                x.lastName.Contains(userSearch.lastName) &&
-                x.email.Contains(userSearch.email))
+                x.firstName.Contains(userSearch.firstName) 
+                && x.lastName.Contains(userSearch.lastName) 
+                && x.email.Contains(userSearch.email))
+                .Skip(userSearch.from - 1)
                 .Take(userSearch.size)
                 .OrderBy(x => x.id)
                 .Select(x => new DTOUser()
