@@ -2,7 +2,7 @@
 
 namespace DripChip_API.DAL.Interfaces;
 
-public interface IAccountRepository<T>
+public interface IAccountRepository
 {
-    IQueryable<T> GetAll();
+    IQueryable<User> GetAll();
 }
