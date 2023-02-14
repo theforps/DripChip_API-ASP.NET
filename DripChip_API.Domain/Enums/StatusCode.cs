@@ -2,7 +2,8 @@
 
 public enum StatusCode
 {
-    AccountNotFound = 0,
+    AccountNotFound = 100,
+    AnimalNotFound = 101,
     
     OK = 200,
     
