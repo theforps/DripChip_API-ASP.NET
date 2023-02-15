@@ -6,5 +6,5 @@ public class DTOUserSearch
     public string lastName { get; set; } = "";
     public string email { get; set; } = "";
     public int from { get; set; } = 1;
-    public int size { get; set; } = Int32.MaxValue;
+    public int size { get; set; } = 10;
 }

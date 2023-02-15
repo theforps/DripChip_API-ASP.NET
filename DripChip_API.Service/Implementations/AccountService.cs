@@ -2,7 +2,6 @@
 using DripChip_API.DAL.Interfaces;
 using DripChip_API.DAL.Response;
 using DripChip_API.Domain.DTO;
-using DripChip_API.Domain.Models;
 using DripChip_API.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +10,6 @@ namespace DripChip_API.Service.Implementations;
 public class AccountService : IAccountService
 {
     private readonly IAccountRepository _userRepository;
-
     public AccountService(IAccountRepository userRepository)
     {
         _userRepository = userRepository;
@@ -64,7 +62,7 @@ public class AccountService : IAccountService
                 x.firstName.Contains(userSearch.firstName) 
                 && x.lastName.Contains(userSearch.lastName) 
                 && x.email.Contains(userSearch.email))
-                .Skip(userSearch.from - 1)
+                .Skip(userSearch.from)
                 .Take(userSearch.size)
                 .OrderBy(x => x.id)
                 .Select(x => new DTOUser()

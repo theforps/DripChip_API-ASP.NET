@@ -1,5 +1,6 @@
 ﻿using DripChip_API.DAL.Interfaces;
 using DripChip_API.DAL.Response;
+using DripChip_API.Domain.DTO.Animal;
 using DripChip_API.Domain.Enums;
 using DripChip_API.Domain.Models;
 using DripChip_API.Service.Interfaces;
@@ -47,5 +48,46 @@ public class AnimalService : IAnimalService
         }
         
             
+    }
+    
+    public async Task<IBaseResponse<List<Animal>>> GetAnimalByParam(DTOAnimalSearch animal)
+    {
+        try
+        {
+            var animals = _animalRepository.GetAll().Where(x =>
+                  (animal.chipperId == null || x.chipperId == animal.chipperId) && 
+                  (animal.chippingLocationId == null || x.chippingLocationId == animal.chippingLocationId) &&
+                  x.lifeStatus == animal.lifeStatus &&
+                  x.gender == animal.gender &&
+                  x.chippingDateTime >= animal.startDateTime &&
+                  x.chippingDateTime <= animal.endDateTime)
+                  .OrderBy(x => x.id)
+                  .Skip(animal.from-1)
+                  .Take(animal.size)
+                  .ToList();
+
+            if (!animals.Any())
+            {
+                return new BaseResponse<List<Animal>>()
+                {
+                    Description = "Животные не найдены",
+                    StatusCode = StatusCode.AnimalNotFound
+                };
+            }
+
+            return new BaseResponse<List<Animal>>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = animals,
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<List<Animal>>()
+            {
+                Description = $"GetAnimalsByParam : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
     }
 }

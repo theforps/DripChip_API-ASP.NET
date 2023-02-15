@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DripChip_API.Domain.DTO.Animal;
 using DripChip_API.Service.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DripChip_API.Controllers
@@ -41,9 +37,25 @@ namespace DripChip_API.Controllers
         }
         
         [HttpGet("search")]
-        public ActionResult GetAnimal()
+        public async Task<ActionResult> GetAnimal([FromQuery] DTOAnimalSearch animal)
         {
-            return Ok();
+
+            if (animal.from < 0 || animal.size <= 0 ||
+                animal.chipperId <= 0 || animal.chippingLocationId <= 0 ||
+                (animal.lifeStatus != "ALIVE" && animal.lifeStatus != "DEAD") ||
+                (animal.gender != "MALE" && animal.gender != "FEMALE" && animal.gender != "OTHER"))
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            var response = await _animalService.GetAnimalByParam(animal);
+
+            if (response.Data == null)
+            {
+                return Ok();
+            }
+            
+            return Ok(response.Data);
         }
         
         /*
