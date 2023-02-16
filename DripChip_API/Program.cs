@@ -4,6 +4,7 @@ using DripChip_API.DAL.Repositories;
 using DripChip_API.Domain.Models;
 using DripChip_API.Service.Implementations;
 using DripChip_API.Service.Interfaces;
+using DripChip_API.Service.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace Drip_chip_API
@@ -22,6 +23,8 @@ namespace Drip_chip_API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddAutoMapper(typeof(UserMapping), typeof(AnimalMapping));
+            
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
             builder.Services.AddScoped<IRegisterRepository, RegisterRepository>();

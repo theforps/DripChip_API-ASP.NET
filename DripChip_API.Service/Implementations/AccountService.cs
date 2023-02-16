@@ -1,17 +1,20 @@
-﻿using DripChip_API.Domain.Enums;
+﻿using AutoMapper;
+using DripChip_API.Domain.Enums;
 using DripChip_API.DAL.Interfaces;
 using DripChip_API.DAL.Response;
 using DripChip_API.Domain.DTO;
+using DripChip_API.Domain.Models;
 using DripChip_API.Service.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace DripChip_API.Service.Implementations;
 
 public class AccountService : IAccountService
 {
     private readonly IAccountRepository _userRepository;
-    public AccountService(IAccountRepository userRepository)
+    private readonly IMapper _mapper;
+    public AccountService(IAccountRepository userRepository, IMapper mapper)
     {
+        _mapper = mapper;
         _userRepository = userRepository;
     }
 
@@ -19,8 +22,9 @@ public class AccountService : IAccountService
     {
         try
         {
-            var user = await _userRepository.GetById(id);
-
+            var response = await _userRepository.GetById(id);
+            var user = _mapper.Map<DTOUser>(response);
+            
             if (user == null)
             {
                 return new BaseResponse<DTOUser>()
@@ -50,8 +54,12 @@ public class AccountService : IAccountService
     {
         try
         {
-            var user = _userRepository.GetByParams(userSearch);
-
+            var search = _mapper.Map<User>(userSearch);
+            
+            var response = _userRepository.GetByParams(search, userSearch.from, userSearch.size);
+            
+            var user = _mapper.Map<List<DTOUser>>(response);
+            
             if (!user.Any())
             {
                 return new BaseResponse<List<DTOUser>>()

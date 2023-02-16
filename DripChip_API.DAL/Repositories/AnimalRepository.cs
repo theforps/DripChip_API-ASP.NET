@@ -3,7 +3,6 @@ using DripChip_API.Domain.Models;
 
 namespace DripChip_API.DAL.Repositories;
 
-using Domain.DTO.Animal;
 using Microsoft.EntityFrameworkCore;
 
 public class AnimalRepository : IAnimalRepository
@@ -21,19 +20,15 @@ public class AnimalRepository : IAnimalRepository
         
         return result;
     }
-    public List<Animal> GetByParams(DTOAnimalSearch animal)
+    public List<Animal> GetByParams(Animal animal, int from, int size, DateTime start, DateTime end)
     {
-        var result = _db.Animals.Where(x =>
-                (animal.chipperId == null || x.chipperId == animal.chipperId) && 
-                (animal.chippingLocationId == null || x.chippingLocationId == animal.chippingLocationId) &&
-                x.lifeStatus == animal.lifeStatus &&
-                x.gender == animal.gender &&
-                x.chippingDateTime >= animal.startDateTime &&
-                x.chippingDateTime <= animal.endDateTime)
-            .OrderBy(x => x.id)
-            .Skip(animal.from-1)
-            .Take(animal.size)
-            .ToList();
+        var result = _db.Animals
+            .Where(x => 
+                (animal.chipperId == 0 || x.chipperId == animal.chipperId) && 
+                (animal.chippingLocationId == 0 || x.chippingLocationId == animal.chippingLocationId) &&
+                x.lifeStatus == animal.lifeStatus && x.gender == animal.gender &&
+                x.chippingDateTime >= start && x.chippingDateTime <= end)
+            .OrderBy(x => x.id).Skip(from-1).Take(size).ToList();
 
         return result;
     }

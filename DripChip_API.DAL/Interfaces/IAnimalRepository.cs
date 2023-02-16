@@ -2,10 +2,8 @@
 
 namespace DripChip_API.DAL.Interfaces;
 
-using Domain.DTO.Animal;
-
 public interface IAnimalRepository
 {
     Task<Animal> GetById(int id);
-    List<Animal> GetByParams(DTOAnimalSearch animal);
+    List<Animal> GetByParams(Animal entity, int from, int size, DateTime start, DateTime end);
 }

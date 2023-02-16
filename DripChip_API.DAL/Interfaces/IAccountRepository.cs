@@ -1,9 +1,9 @@
-﻿namespace DripChip_API.DAL.Interfaces;
+﻿using DripChip_API.Domain.Models;
 
-using Domain.DTO;
+namespace DripChip_API.DAL.Interfaces;
 
 public interface IAccountRepository
 {
-    Task<DTOUser> GetById(int id);
-    List<DTOUser> GetByParams(DTOUserSearch userSearch);
+    Task<User> GetById(int id);
+    List<User> GetByParams(User entity, int from, int size);
 }

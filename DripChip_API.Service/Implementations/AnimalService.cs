@@ -1,4 +1,5 @@
-﻿using DripChip_API.DAL.Interfaces;
+﻿using AutoMapper;
+using DripChip_API.DAL.Interfaces;
 using DripChip_API.DAL.Response;
 using DripChip_API.Domain.DTO.Animal;
 using DripChip_API.Domain.Enums;
@@ -10,9 +11,11 @@ namespace DripChip_API.Service.Implementations;
 public class AnimalService : IAnimalService
 {
     private readonly IAnimalRepository _animalRepository;
-
-    public AnimalService(IAnimalRepository animalRepository)
+    private readonly IMapper _mapper;
+    
+    public AnimalService(IAnimalRepository animalRepository, IMapper mapper)
     {
+        _mapper = mapper;
         _animalRepository = animalRepository;
     }
     
@@ -53,7 +56,9 @@ public class AnimalService : IAnimalService
     {
         try
         {
-            var animals = _animalRepository.GetByParams(animal);
+            var search = _mapper.Map<Animal>(animal);
+            
+            var animals = _animalRepository.GetByParams(search, animal.from, animal.size, animal.startDateTime, animal.endDateTime);
 
             if (!animals.Any())
             {
