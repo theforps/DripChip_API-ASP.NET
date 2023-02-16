@@ -38,7 +38,7 @@ namespace DripChip_API.Controllers
 
             if (check.StatusCode == Domain.Enums.StatusCode.AccountExists)
             {
-                return StatusCode(StatusCodes.Status409Conflict);
+                return Conflict(check.Description);
             }
 
             var response = await _registerService.CreateUser(user);

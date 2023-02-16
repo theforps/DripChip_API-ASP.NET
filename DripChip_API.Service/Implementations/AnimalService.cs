@@ -4,7 +4,6 @@ using DripChip_API.Domain.DTO.Animal;
 using DripChip_API.Domain.Enums;
 using DripChip_API.Domain.Models;
 using DripChip_API.Service.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace DripChip_API.Service.Implementations;
 
@@ -21,7 +20,7 @@ public class AnimalService : IAnimalService
     {
         try
         {
-            var animal = await _animalRepository.GetAll().FirstOrDefaultAsync(x => x.id == id);
+            var animal = await _animalRepository.GetById(id);
 
             if (animal == null)
             {
@@ -54,17 +53,7 @@ public class AnimalService : IAnimalService
     {
         try
         {
-            var animals = _animalRepository.GetAll().Where(x =>
-                  (animal.chipperId == null || x.chipperId == animal.chipperId) && 
-                  (animal.chippingLocationId == null || x.chippingLocationId == animal.chippingLocationId) &&
-                  x.lifeStatus == animal.lifeStatus &&
-                  x.gender == animal.gender &&
-                  x.chippingDateTime >= animal.startDateTime &&
-                  x.chippingDateTime <= animal.endDateTime)
-                  .OrderBy(x => x.id)
-                  .Skip(animal.from-1)
-                  .Take(animal.size)
-                  .ToList();
+            var animals = _animalRepository.GetByParams(animal);
 
             if (!animals.Any())
             {

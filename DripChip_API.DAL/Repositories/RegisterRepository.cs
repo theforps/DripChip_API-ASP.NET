@@ -4,6 +4,8 @@ using DripChip_API.Domain.Models;
 
 namespace DripChip_API.DAL.Repositories;
 
+using Microsoft.EntityFrameworkCore;
+
 public class RegisterRepository: IRegisterRepository
 {
     private readonly ApplicationDbContext _db;
@@ -13,14 +15,31 @@ public class RegisterRepository: IRegisterRepository
         _db = db;
     }
     
-    public async Task Create(User user)
+    public async Task Create(DTOUserRegistration user)
     {
-        await _db.Users.AddAsync(user);
+        var account = new User()
+        {
+            firstName = user.firstName,
+            lastName = user.lastName,
+            email = user.email,
+            password = user.password
+        };
+        
+        await _db.Users.AddAsync(account);
         await _db.SaveChangesAsync();
     }
-
-    public IQueryable<User> GetAll()
+    public async Task<DTOUser> GetByEmail(string email)
     {
-        return _db.Users;
+        var result = await _db.Users
+            .Select(x => new DTOUser()
+            {
+                lastName = x.lastName,
+                firstName = x.firstName,
+                email = x.email,
+                id = x.id
+            })
+            .FirstOrDefaultAsync(x => x.email == email);
+
+        return result;
     }
 }

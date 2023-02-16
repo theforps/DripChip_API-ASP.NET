@@ -19,7 +19,7 @@ public class AccountService : IAccountService
     {
         try
         {
-            var user = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.id == id);
+            var user = await _userRepository.GetById(id);
 
             if (user == null)
             {
@@ -30,18 +30,10 @@ public class AccountService : IAccountService
                 };
             }
 
-            var data = new DTOUser()
-            {
-                id = user.id,
-                firstName = user.firstName,
-                lastName = user.lastName,
-                email = user.email
-            };
-
             return new BaseResponse<DTOUser>()
             {
                 StatusCode = StatusCode.OK,
-                Data = data,
+                Data = user,
             };
         }
         catch (Exception ex)
@@ -58,20 +50,7 @@ public class AccountService : IAccountService
     {
         try
         {
-            var user = _userRepository.GetAll().Where(x =>
-                x.firstName.Contains(userSearch.firstName) 
-                && x.lastName.Contains(userSearch.lastName) 
-                && x.email.Contains(userSearch.email))
-                .Skip(userSearch.from)
-                .Take(userSearch.size)
-                .OrderBy(x => x.id)
-                .Select(x => new DTOUser()
-                {
-                    email = x.email,
-                    id = x.id,
-                    firstName = x.firstName,
-                    lastName = x.lastName
-                }).ToList();
+            var user = _userRepository.GetByParams(userSearch);
 
             if (!user.Any())
             {

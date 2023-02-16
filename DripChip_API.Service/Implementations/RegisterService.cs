@@ -21,29 +21,14 @@ public class RegisterService : IRegisterService
     {
         try
         {
-            var account = new User()
-            {
-                firstName = user.firstName,
-                lastName = user.lastName,
-                email = user.email,
-                password = user.password
-            };
+            await _registerRepository.Create(user);
 
-            await _registerRepository.Create(account);
-
-            var result = await _registerRepository.GetAll()
-                .FirstOrDefaultAsync(x => x.email == user.email);
+            var result = await _registerRepository.GetByEmail(user.email);
 
             return new BaseResponse<DTOUser>()
             {
                 StatusCode = StatusCode.OK,
-                Data = new DTOUser()
-                {
-                    id = result.id,
-                    firstName = result.firstName,
-                    lastName = result.lastName,
-                    email = result.email
-                }
+                Data = result
             };
         }
         catch (Exception ex)
@@ -60,7 +45,7 @@ public class RegisterService : IRegisterService
     {
         try
         {
-            var result = await _registerRepository.GetAll().FirstOrDefaultAsync(x => x.email == email);
+            var result = await _registerRepository.GetByEmail(email);
 
             if (result == null)
             {

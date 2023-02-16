@@ -30,7 +30,7 @@ namespace DripChip_API.Controllers
 
             if (response.StatusCode == Domain.Enums.StatusCode.AccountNotFound)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return NotFound(response.Description);
             }
             
             return Ok(response.Data);
@@ -50,7 +50,7 @@ namespace DripChip_API.Controllers
 
             if (response.Data == null)
             {
-                return Ok();
+                return Ok(response.Description);
             }
             
             return Ok(response.Data);
