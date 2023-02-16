@@ -58,12 +58,26 @@ namespace DripChip_API.Controllers
             return Ok(response.Data);
         }
         
-        /*
-        [HttpGet("{typeId:int}",Name = "types")]
-        public ActionResult GetAnimalType(int typeId)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("types/{typeId:long}")]
+        public async Task<ActionResult> GetAnimalType(long typeId)
         {
-            return Ok();
+            if (typeId <= 0 || typeId == null)
+            {
+                return BadRequest();
+            }
+
+            var response = await _animalService.GetType(typeId);
+
+            if (response.StatusCode == Domain.Enums.StatusCode.TypeNotFound)
+            {
+                return NotFound(response.Description);
+            }
+            
+            return Ok(response.Data);
         }
-        */
+        
     }
 }

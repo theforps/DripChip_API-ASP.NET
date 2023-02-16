@@ -22,7 +22,7 @@ public class AccountService : IAccountService
     {
         try
         {
-            var response = await _userRepository.GetById(id);
+            var response = await _userRepository.GetUserById(id);
             var user = _mapper.Map<DTOUser>(response);
             
             if (user == null)
@@ -56,7 +56,7 @@ public class AccountService : IAccountService
         {
             var search = _mapper.Map<User>(userSearch);
             
-            var response = _userRepository.GetByParams(search, userSearch.from, userSearch.size);
+            var response = _userRepository.GetUsersByParams(search, userSearch.from, userSearch.size);
             
             var user = _mapper.Map<List<DTOUser>>(response);
             
@@ -84,4 +84,5 @@ public class AccountService : IAccountService
             };
         }
     }
+    
 }

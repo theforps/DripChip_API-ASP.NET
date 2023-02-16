@@ -8,4 +8,5 @@ public interface IAnimalService
 {
     Task<IBaseResponse<Animal>> GetAnimal(int id);
     Task<IBaseResponse<List<Animal>>> GetAnimalByParam(DTOAnimalSearch animal);
+    Task<IBaseResponse<Types>> GetType(long typeId);
 }

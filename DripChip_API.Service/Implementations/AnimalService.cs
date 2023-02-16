@@ -84,4 +84,35 @@ public class AnimalService : IAnimalService
             };
         }
     }
+    
+    public async Task<IBaseResponse<Types>> GetType(long id)
+    {
+        try
+        {
+            var type = await _animalRepository.GetTypeById(id);
+
+            if (type == null)
+            {
+                return new BaseResponse<Types>()
+                {
+                    Description = "Тип животного не найден",
+                    StatusCode = StatusCode.TypeNotFound
+                };
+            }
+
+            return new BaseResponse<Types>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = type,
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<Types>()
+            {
+                Description = $"GetType : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
+    }
 }

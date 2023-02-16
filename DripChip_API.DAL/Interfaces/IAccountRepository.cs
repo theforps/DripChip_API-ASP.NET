@@ -4,6 +4,6 @@ namespace DripChip_API.DAL.Interfaces;
 
 public interface IAccountRepository
 {
-    Task<User> GetById(int id);
-    List<User> GetByParams(User entity, int from, int size);
+    Task<User> GetUserById(int id);
+    List<User> GetUsersByParams(User entity, int from, int size);
 }

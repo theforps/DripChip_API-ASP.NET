@@ -28,10 +28,15 @@ public class AnimalRepository : IAnimalRepository
                 (animal.chippingLocationId == 0 || x.chippingLocationId == animal.chippingLocationId) &&
                 x.lifeStatus == animal.lifeStatus && x.gender == animal.gender &&
                 x.chippingDateTime >= start && x.chippingDateTime <= end)
-            .OrderBy(x => x.id).Skip(from-1).Take(size).ToList();
+            .OrderBy(x => x.id).Skip(from).Take(size).ToList();
 
         return result;
     }
 
+    public async Task<Types> GetTypeById(long id)
+    {
+        var result = await _db.Types.FirstOrDefaultAsync(x => x.id == id);
 
+        return result;
+    }
 }

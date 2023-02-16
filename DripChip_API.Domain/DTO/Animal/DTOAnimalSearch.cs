@@ -8,6 +8,6 @@ public class DTOAnimalSearch
     public long? chippingLocationId { get; set; }
     public string lifeStatus { get; set; }
     public string gender { get; set; }
-    public int from { get; set; } = 1;
+    public int from { get; set; } = 0;
     public int size { get; set; } = 10;
 }

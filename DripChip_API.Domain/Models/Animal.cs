@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DripChip_API.Domain.Models;
 
 namespace DripChip_API.Domain.Models;
 
@@ -6,7 +7,7 @@ public class Animal
 {
     [Key]
     public long id { get; set; }
-    //public List<long> animalTypes { get; set; }
+    List<Types> animalTypes { get; set; }
     public float weight { get; set; }
     public float length { get; set; }
     public float height { get; set; }

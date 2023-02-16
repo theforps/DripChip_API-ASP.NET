@@ -14,20 +14,20 @@ public class AccountRepository : IAccountRepository
         _db = db;
     }
     
-    public async Task<User> GetById(int id)
+    public async Task<User> GetUserById(int id)
     {
         var result = await _db.Users.FirstOrDefaultAsync(x => x.id == id);
         
         return  result;
     }
     
-    public List<User> GetByParams(User userSearch, int from, int size)
+    public List<User> GetUsersByParams(User userSearch, int from, int size)
     {
         var result = _db.Users.Where(x =>
                 x.firstName.Contains(userSearch.firstName) 
                 && x.lastName.Contains(userSearch.lastName) 
                 && x.email.Contains(userSearch.email))
-            .Skip(from-1).Take(size).OrderBy(x => x.id).ToList();
+            .Skip(from).Take(size).OrderBy(x => x.id).ToList();
 
         return result;
     }

@@ -4,6 +4,7 @@ public enum StatusCode
 {
     AccountNotFound = 100,
     AnimalNotFound = 101,
+    TypeNotFound = 102,
     
     AccountExists = 301,
     
