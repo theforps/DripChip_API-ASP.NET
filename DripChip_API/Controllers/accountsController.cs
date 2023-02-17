@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DripChip_API.Controllers
 {
+    using DAL.Response;
+
     [Route("[controller]")]
     [ApiController]
     public class accountsController : ControllerBase
@@ -18,7 +20,7 @@ namespace DripChip_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpGet("{accountId:int}")]
+        [HttpGet("{accountId:int?}")]
         public async Task<ActionResult> GetUserById(int accountId)
         {
             if (accountId == null || accountId <= 0)
@@ -32,8 +34,9 @@ namespace DripChip_API.Controllers
             {
                 return NotFound(response.Description);
             }
-            
+
             return Ok(response.Data);
+            
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]

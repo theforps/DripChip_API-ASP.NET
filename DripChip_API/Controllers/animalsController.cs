@@ -18,7 +18,7 @@ namespace DripChip_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("{animalId:int}")]
+        [HttpGet("{animalId:int?}")]
         public async Task<ActionResult> GetAnimalById(int animalId)
         {
             if (animalId == null || animalId == 0)
@@ -61,7 +61,7 @@ namespace DripChip_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("types/{typeId:long}")]
+        [HttpGet("types/{typeId:long?}")]
         public async Task<ActionResult> GetAnimalType(long typeId)
         {
             if (typeId <= 0 || typeId == null)
