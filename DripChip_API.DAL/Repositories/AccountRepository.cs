@@ -24,9 +24,9 @@ public class AccountRepository : IAccountRepository
     public List<User> GetUsersByParams(User userSearch, int from, int size)
     {
         var result = _db.Users.Where(x =>
-                x.firstName.Contains(userSearch.firstName) 
-                && x.lastName.Contains(userSearch.lastName) 
-                && x.email.Contains(userSearch.email))
+                x.firstName.ToLower().Contains(userSearch.firstName.ToLower()) 
+                && x.lastName.ToLower().Contains(userSearch.lastName.ToLower()) 
+                && x.email.ToLower().Contains(userSearch.email.ToLower()))
             .Skip(from).Take(size).OrderBy(x => x.id).ToList();
 
         return result;

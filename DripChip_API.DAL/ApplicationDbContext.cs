@@ -8,6 +8,8 @@ public class ApplicationDbContext :DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Animal> Animals { get; set; }
     public DbSet<Types> Types { get; set; }
+    public DbSet<Location> Locations { get; set; }
+    public DbSet<LocationInfo> LocationInfo { get; set; }
 
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base(options)
     {
