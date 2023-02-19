@@ -28,10 +28,12 @@ namespace Drip_chip_API
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
             builder.Services.AddScoped<IRegisterRepository, RegisterRepository>();
+            builder.Services.AddScoped<ILocationRepository, LocationRepository>();
             
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IAnimalService, AnimalService>();
             builder.Services.AddScoped<IRegisterService, RegisterService>();
+            builder.Services.AddScoped<ILocationService, LocationService>();
             
             
             var app = builder.Build();
