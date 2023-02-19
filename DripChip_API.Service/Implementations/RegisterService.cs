@@ -45,7 +45,7 @@ public class RegisterService : IRegisterService
     {
         try
         {
-            var result = await _registerRepository.GetByEmail(email);
+            var result = await _registerRepository.GetByEmail(email.ToLower());
 
             if (result == null)
             {

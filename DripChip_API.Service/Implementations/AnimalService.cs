@@ -2,6 +2,8 @@
 using DripChip_API.DAL.Interfaces;
 using DripChip_API.DAL.Response;
 using DripChip_API.Domain.DTO.Animal;
+using DripChip_API.Domain.DTO.Location;
+using DripChip_API.Domain.DTO.Type;
 using DripChip_API.Domain.Enums;
 using DripChip_API.Domain.Models;
 using DripChip_API.Service.Interfaces;
@@ -19,7 +21,7 @@ public class AnimalService : IAnimalService
         _animalRepository = animalRepository;
     }
     
-    public async Task<IBaseResponse<Animal>> GetAnimal(int id)
+    public async Task<IBaseResponse<Animal>> GetAnimal(long id)
     {
         try
         {
@@ -58,7 +60,12 @@ public class AnimalService : IAnimalService
         {
             var search = _mapper.Map<Animal>(animal);
             
-            var animals = _animalRepository.GetByParams(search, animal.from, animal.size, animal.startDateTime, animal.endDateTime);
+            var animals = _animalRepository.GetByParams(
+                search, 
+                animal.from, 
+                animal.size, 
+                DateTime.Parse(animal.startDateTime), 
+                DateTime.Parse(animal.endDateTime));
 
             if (!animals.Any())
             {
@@ -85,22 +92,24 @@ public class AnimalService : IAnimalService
         }
     }
     
-    public async Task<IBaseResponse<Types>> GetType(long id)
+    public async Task<IBaseResponse<DTOType>> GetType(long id)
     {
         try
         {
-            var type = await _animalRepository.GetTypeById(id);
+            var response = await _animalRepository.GetTypeById(id);
+
+            var type = _mapper.Map<DTOType>(response);
 
             if (type == null)
             {
-                return new BaseResponse<Types>()
+                return new BaseResponse<DTOType>()
                 {
                     Description = "Тип животного не найден",
                     StatusCode = StatusCode.TypeNotFound
                 };
             }
 
-            return new BaseResponse<Types>()
+            return new BaseResponse<DTOType>()
             {
                 StatusCode = StatusCode.OK,
                 Data = type,
@@ -108,9 +117,47 @@ public class AnimalService : IAnimalService
         }
         catch (Exception ex)
         {
-            return new BaseResponse<Types>()
+            return new BaseResponse<DTOType>()
             {
                 Description = $"GetType : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
+    }
+
+    public async Task<IBaseResponse<List<DTOLocationInfo>>> GetLocationStory(long id, DTOAnimalSearchLocation animal)
+    {
+        try
+        {
+            var response = _animalRepository.GetAnimalLocations(
+                id,
+                animal.from,
+                animal.size,
+                DateTime.Parse(animal.startDateTime),
+                DateTime.Parse(animal.endDateTime));
+
+            var locationStory = _mapper.Map<List<DTOLocationInfo>>(response);
+            
+            if (!locationStory.Any())
+            {
+                return new BaseResponse<List<DTOLocationInfo>>()
+                {
+                    Description = "Локации с такими параметрами не найдены",
+                    StatusCode = StatusCode.LocationStoryNotFound
+                };
+            }
+            
+            return new BaseResponse<List<DTOLocationInfo>>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = locationStory,
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<List<DTOLocationInfo>>()
+            {
+                Description = $"GetLocationStory : {ex.Message}",
                 StatusCode = StatusCode.ServerError,
             };
         }
