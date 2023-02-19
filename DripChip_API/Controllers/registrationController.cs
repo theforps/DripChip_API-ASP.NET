@@ -16,25 +16,17 @@ namespace DripChip_API.Controllers
         }
         
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Register([FromBody] DTOUserRegistration user)
+        public async Task<ActionResult> Register([FromBody] DTOUserRegistration user)
         {
-            if (String.IsNullOrEmpty(user.firstName)
-                || String.IsNullOrWhiteSpace(user.firstName)
-                || String.IsNullOrEmpty(user.lastName)
-                || String.IsNullOrWhiteSpace(user.lastName)
-                || String.IsNullOrEmpty(user.email)
-                || String.IsNullOrWhiteSpace(user.email)
-                || String.IsNullOrEmpty(user.password)
-                || String.IsNullOrWhiteSpace(user.password)
-                || !ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return BadRequest();
             }
 
-            var check = await _registerService.СheckForExistence(user.email);
+            var check = await _registerService.СheckForExistence(user.email.ToLower());
 
             if (check.StatusCode == Domain.Enums.StatusCode.AccountExists)
             {
@@ -43,7 +35,7 @@ namespace DripChip_API.Controllers
 
             var response = await _registerService.CreateUser(user);
 
-            return Ok(response.Data);
+            return Created($"/accounts/{response.Data.id}", response.Data);
         }
         
     }

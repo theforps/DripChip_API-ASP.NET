@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using DripChip_API.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DripChip_API.Controllers
@@ -11,10 +7,32 @@ namespace DripChip_API.Controllers
     [ApiController]
     public class locationsController : ControllerBase
     {
-        [HttpGet("{pointId:int}")]
-        public ActionResult GetLocationById(int pointId)
+        private readonly ILocationService _locationService;
+
+        public locationsController(ILocationService locationService)
         {
-            return Ok();
+            _locationService = locationService;
+        }
+        
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("{pointId:long?}")]
+        public async Task<ActionResult> GetLocationById(long pointId)
+        {
+            if (pointId <= 0)
+            {
+                return BadRequest();
+            }
+
+            var response = await _locationService.GetById(pointId);
+
+            if (response.StatusCode == Domain.Enums.StatusCode.LocationNotFound)
+            {
+                return NotFound(response.Description);
+            }
+            
+            return Ok(response.Data);
         }
     }
 }

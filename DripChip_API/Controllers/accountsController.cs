@@ -1,11 +1,10 @@
 using DripChip_API.Domain.DTO;
 using DripChip_API.Service.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DripChip_API.Controllers
 {
-    using DAL.Response;
-
     [Route("[controller]")]
     [ApiController]
     public class accountsController : ControllerBase
@@ -23,9 +22,9 @@ namespace DripChip_API.Controllers
         [HttpGet("{accountId:int?}")]
         public async Task<ActionResult> GetUserById(int accountId)
         {
-            if (accountId == null || accountId <= 0)
+            if (accountId <= 0)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return BadRequest();
             }
 
             var response = await _accountService.GetUser(accountId);
@@ -44,16 +43,16 @@ namespace DripChip_API.Controllers
         [HttpGet("search")]
         public ActionResult GetUserByParams([FromQuery] DTOUserSearch userSearch)
         {
-            if (userSearch.from < 0 || userSearch.size <= 0)
+            if (!ModelState.IsValid)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return BadRequest();
             }
 
             var response = _accountService.GetUsersByParam(userSearch);
 
-            if (response.Data == null)
+            if (response.StatusCode == Domain.Enums.StatusCode.AccountNotFound)
             {
-                return Ok(response.Description);
+                return BadRequest(response.Description);
             }
             
             return Ok(response.Data);
