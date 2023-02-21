@@ -42,4 +42,16 @@ public class RegisterRepository: IRegisterRepository
 
         return result;
     }
+
+    public async Task<bool> GetUser(string login, string password)
+    {
+        var user = await _db.Users.FirstOrDefaultAsync(x => x.email == login && x.password == password);
+        
+        if (user != null)
+        {
+            return true;
+        }
+
+        return false;
+    }
 }
