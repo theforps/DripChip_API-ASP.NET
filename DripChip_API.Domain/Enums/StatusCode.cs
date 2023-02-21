@@ -8,6 +8,7 @@ public enum StatusCode
     LocationNotFound = 103,
     LocationStoryNotFound = 104,
     
+    AccountIsNotExists = 300,
     AccountExists = 301,
     
     OK = 200,
