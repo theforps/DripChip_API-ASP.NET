@@ -1,5 +1,6 @@
 using DripChip_API.Domain.DTO;
 using DripChip_API.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
