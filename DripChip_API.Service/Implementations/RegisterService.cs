@@ -72,4 +72,36 @@ public class RegisterService : IRegisterService
             };
         }
     }
+
+    public async Task<IBaseResponse<bool>> GetUser(string login, string password)
+    {
+        try
+        {
+            var result = await _registerRepository.GetUser(login, password);
+
+            if (result)
+            {
+                return new BaseResponse<bool>()
+                {
+                    StatusCode = StatusCode.OK,
+                    Data = true
+                };   
+            }
+            
+            return new BaseResponse<bool>()
+            {
+                Description = "Account is not exists",
+                StatusCode = StatusCode.AccountIsNotExists,
+                Data = false
+            };   
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<bool>()
+            {
+                Description = $"[GetUser] : {ex.Message}",
+                StatusCode = StatusCode.ServerError
+            };
+        }
+    }
 }

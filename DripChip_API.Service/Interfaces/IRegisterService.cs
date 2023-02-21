@@ -7,4 +7,5 @@ public interface IRegisterService
 {
     Task<IBaseResponse<DTOUser>> CreateUser(DTOUserRegistration user);
     Task<IBaseResponse<bool>> СheckForExistence(string email);
+    Task<IBaseResponse<bool>> GetUser(string login, string password);
 }
