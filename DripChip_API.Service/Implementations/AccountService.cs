@@ -84,5 +84,71 @@ public class AccountService : IAccountService
             };
         }
     }
-    
+
+    public async Task<IBaseResponse<DTOUser>> UpdateUser(int accountId, DTOUserRegistration entity)
+    {
+        try
+        {
+            var response = _mapper.Map<User>(entity);
+            response.id = accountId;
+
+            var query = await _userRepository.UpdateUser(response);
+
+            var user = _mapper.Map<DTOUser>(query);
+            
+            if (user == null)
+            {
+                return new BaseResponse<DTOUser>()
+                {
+                    Description = "Пользователь не создан",
+                    StatusCode = StatusCode.AccountNotCreated
+                };
+            }
+
+            return new BaseResponse<DTOUser>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = user,
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<DTOUser>()
+            {
+                Description = $"CreateUser : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
+    }
+
+    public async Task<IBaseResponse<bool>> DeleteUser(int id)
+    {
+        try
+        {
+            var result = await _userRepository.DeleteUser(id);
+            
+            if (!result)
+            {
+                return new BaseResponse<bool>()
+                {
+                    Description = "Пользователь не удален, с ним связаны животные",
+                    StatusCode = StatusCode.AccountNotDeleted
+                };
+            }
+
+            return new BaseResponse<bool>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = result,
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<bool>()
+            {
+                Description = $"DeleteUser : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
+    }
 }
