@@ -11,7 +11,12 @@ public enum StatusCode
     AccountIsNotExists = 300,
     AccountExists = 301,
     
+    AccountNotCreated = 400,
+    AccountNotDeleted = 401,
+    
     OK = 200,
+    
+    AuthorizationDataIsEmpty = 501,
     
     ServerError = 500,
 }
