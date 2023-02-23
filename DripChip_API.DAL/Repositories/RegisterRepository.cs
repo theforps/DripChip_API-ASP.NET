@@ -37,7 +37,7 @@ public class RegisterRepository: IRegisterRepository
                 firstName = x.firstName,
                 email = x.email,
                 id = x.id
-            })
+            }).AsNoTracking()
             .FirstOrDefaultAsync(x => x.email == email);
 
         return result;
@@ -45,7 +45,7 @@ public class RegisterRepository: IRegisterRepository
 
     public async Task<bool> GetUser(string login, string password)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(x => x.email == login && x.password == password);
+        var user = await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.email == login && x.password == password);
         
         if (user != null)
         {
