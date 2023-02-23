@@ -26,7 +26,7 @@ namespace DripChip_API.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest("Невалидные входные данные");
             }
 
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -34,7 +34,7 @@ namespace DripChip_API.Controllers
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
             
-            var check = await _registerService.СheckForExistence(user.email.ToLower());
+            var check = await _registerService.СheckForExistence(user.email);
 
             if (check.StatusCode == Domain.Enums.StatusCode.AccountExists)
             {

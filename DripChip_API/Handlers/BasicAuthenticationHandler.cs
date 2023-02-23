@@ -26,9 +26,18 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
     
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
+        if (!Request.Headers.Authorization.Any())
+        {
+            var claims = new[] { new Claim(ClaimTypes.Name, StatusCode.AuthorizationDataIsEmpty.ToString()) };
+            var identity = new ClaimsIdentity(claims, Scheme.Name);
+            var principal = new ClaimsPrincipal(identity);
+            var ticket = new AuthenticationTicket(principal, Scheme.Name);
+            return AuthenticateResult.Success(ticket);
+        }
+
         if (!Request.Headers.ContainsKey("Authorization"))
         {
-            return AuthenticateResult.Fail("Authorization header was not found");
+            return AuthenticateResult.Fail("Bad request for Authorization");
         }
 
         var authHeaderValue = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
@@ -53,6 +62,7 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
             return AuthenticateResult.Success(ticket);
         }
+        
 
         return AuthenticateResult.Fail("Login or password is wrong");
     }

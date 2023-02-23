@@ -31,11 +31,11 @@ namespace Drip_chip_API
             
             builder.Services.AddSwaggerGen(c =>  
             {
-                c.AddSecurityDefinition("Basic", new OpenApiSecurityScheme  
+                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme  
                 {  
                     Name = "Authorization",  
                     Type = SecuritySchemeType.Http,  
-                    Scheme = "Basic",  
+                    Scheme = "basic",  
                     In = ParameterLocation.Header,  
                     Description = "Enter the login and password for authorization."  
                 });  
