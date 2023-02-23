@@ -8,4 +8,6 @@ public interface IAccountService
 {
     Task<IBaseResponse<DTOUser>> GetUser(int id);
     IBaseResponse<List<DTOUser>> GetUsersByParam(DTOUserSearch userSearch);
+    Task<IBaseResponse<DTOUser>> UpdateUser(int id, DTOUserRegistration user);
+    Task<IBaseResponse<bool>> DeleteUser (int id);
 }
