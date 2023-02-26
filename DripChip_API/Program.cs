@@ -55,7 +55,7 @@ namespace Drip_chip_API
                 });  
             });  
 
-            builder.Services.AddAutoMapper(typeof(UserMapping), typeof(AnimalMapping));
+            builder.Services.AddAutoMapper(typeof(UserMapping), typeof(AnimalMapping), typeof(LocationMapping));
             
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();

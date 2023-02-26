@@ -17,8 +17,13 @@ public class AccountRepository : IAccountRepository
     public async Task<User> GetUserById(int id)
     {
         var result = await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.id == id);
-        
-        return  result;
+
+        if (result != null)
+        {
+            return  result;
+        }
+
+        return new User();
     }
     
     public List<User> GetUsersByParams(User userSearch, int from, int size)
@@ -44,14 +49,17 @@ public class AccountRepository : IAccountRepository
     {
         var animals = _db.Animals.AsNoTracking().Where(x => x.chipperId == id);
 
-        if (!animals.Any())
+        if (!await animals.AnyAsync())
         {
             var result = await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.id == id);
 
-            _db.Users.Remove(result);
-            await _db.SaveChangesAsync();
+            if (result != null)
+            {
+                _db.Users.Remove(result);
+                await _db.SaveChangesAsync();
 
-            return true;
+                return true;
+            }
         }
 
         return false;

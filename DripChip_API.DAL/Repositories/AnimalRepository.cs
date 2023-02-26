@@ -16,14 +16,17 @@ public class AnimalRepository : IAnimalRepository
         _db = db;
     }
     
-    public Task<Animal> GetById(long id)
+    public async Task<Animal> GetById(long id)
     {
-        var result = _db.Animals
+        var result = await _db.Animals
             .Include(x => x.visitedLocations)
             .Include(x => x.animalTypes)
             .FirstOrDefaultAsync(x => x.id == id);
         
-        return result;
+        if (result != null)
+            return result;
+
+        return new Animal();
     }
     public List<Animal> GetByParams(Animal animal, int from, int size, DateTime start, DateTime end)
     {
@@ -48,7 +51,10 @@ public class AnimalRepository : IAnimalRepository
     {
         var result = await _db.Types.FirstOrDefaultAsync(x => x.id == id);
 
-        return result;
+        if (result != null)
+            return result;
+
+        return new Types();
     }
 
     public List<LocationInfo> GetAnimalLocations(long id, int from, int size, DateTime start, DateTime end)

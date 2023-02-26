@@ -40,7 +40,10 @@ public class RegisterRepository: IRegisterRepository
             }).AsNoTracking()
             .FirstOrDefaultAsync(x => x.email == email);
 
-        return result;
+        if (result != null)
+            return result;
+
+        return new DTOUser();
     }
 
     public async Task<bool> GetUser(string login, string password)
