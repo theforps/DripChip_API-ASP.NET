@@ -12,6 +12,8 @@ public enum StatusCode
     AccountExists = 301,
     LocationAlreadyExist = 302,
     LocationRelated = 303,
+    TypeAlreadyExist = 304,
+    TypeRelated = 305,
     
     AccountNotCreated = 400,
     AccountNotDeleted = 401,

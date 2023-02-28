@@ -11,5 +11,8 @@ public interface IAnimalService
     Task<IBaseResponse<Animal>> GetAnimal(long id);
     Task<IBaseResponse<List<Animal>>> GetAnimalByParam(DTOAnimalSearch animal);
     Task<IBaseResponse<DTOType>> GetType(long typeId);
+    Task<IBaseResponse<DTOType>> AddType(DTOTypeInsert type);
+    Task<IBaseResponse<DTOType>> UpdateType(long id, DTOTypeInsert type);
+    Task<IBaseResponse<bool>> DeleteType(long id);
     Task<IBaseResponse<List<DTOLocationInfo>>> GetLocationStory(long id, DTOAnimalSearchLocation animal);
 }

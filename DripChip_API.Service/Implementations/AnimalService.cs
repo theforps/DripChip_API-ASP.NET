@@ -20,6 +20,8 @@ public class AnimalService : IAnimalService
         _mapper = mapper;
         _animalRepository = animalRepository;
     }
+
+    #region Animal
     
     public async Task<IBaseResponse<Animal>> GetAnimal(long id)
     {
@@ -92,6 +94,10 @@ public class AnimalService : IAnimalService
         }
     }
     
+    #endregion
+
+    #region Type
+
     public async Task<IBaseResponse<DTOType>> GetType(long id)
     {
         try
@@ -100,7 +106,7 @@ public class AnimalService : IAnimalService
 
             var type = _mapper.Map<DTOType>(response);
 
-            if (type == null)
+            if (type.type == null)
             {
                 return new BaseResponse<DTOType>()
                 {
@@ -124,6 +130,118 @@ public class AnimalService : IAnimalService
             };
         }
     }
+
+    public async Task<IBaseResponse<DTOType>> AddType(DTOTypeInsert entity)
+    {
+        try
+        {
+            var type = _mapper.Map<Types>(entity);
+
+            var check = await _animalRepository.CheckTypeExist(type);
+
+            if (check)
+            {
+                return new BaseResponse<DTOType>()
+                {
+                    Description = "Тип животного уже существует",
+                    StatusCode = StatusCode.TypeAlreadyExist
+                };
+            }
+            
+            var response = await _animalRepository.AddType(type);
+
+            var result = _mapper.Map<DTOType>(response);
+            
+            return new BaseResponse<DTOType>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = result,
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<DTOType>()
+            {
+                Description = $"AddType : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
+    }
+
+    public async Task<IBaseResponse<DTOType>> UpdateType(long id, DTOTypeInsert entity)
+    {
+        try
+        {
+            var type = _mapper.Map<Types>(entity);
+
+            var check = await _animalRepository.CheckTypeExist(type);
+
+            if (check)
+            {
+                return new BaseResponse<DTOType>()
+                {
+                    Description = "Тип животного уже существует",
+                    StatusCode = StatusCode.TypeAlreadyExist
+                };
+            }
+            
+            type.id = id;
+            
+            var response = await _animalRepository.UpdateType(type);
+
+            var result = _mapper.Map<DTOType>(response);
+            
+            return new BaseResponse<DTOType>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = result,
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<DTOType>()
+            {
+                Description = $"UpdateType : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
+    }
+
+    public async Task<IBaseResponse<bool>> DeleteType(long id)
+    {
+        try
+        {
+
+            var result = await _animalRepository.DeleteType(id);
+
+            if (!result)
+            {
+                return new BaseResponse<bool>()
+                {
+                    Description = "Тип связан с животным",
+                    StatusCode = StatusCode.TypeRelated
+                };
+            }
+            
+            return new BaseResponse<bool>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = result,
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<bool>()
+            {
+                Description = $"DeleteType : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
+    }
+
+    #endregion
+
+    #region Location
 
     public async Task<IBaseResponse<List<DTOLocationInfo>>> GetLocationStory(long id, DTOAnimalSearchLocation animal)
     {
@@ -162,4 +280,6 @@ public class AnimalService : IAnimalService
             };
         }
     }
+
+    #endregion
 }

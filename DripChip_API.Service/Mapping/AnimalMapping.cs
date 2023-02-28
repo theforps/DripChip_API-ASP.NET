@@ -12,7 +12,11 @@ public class AnimalMapping : Profile
     {
         CreateMap<Animal, DTOAnimalSearch>().ReverseMap();
         CreateMap<Animal, LocationInfo>().ReverseMap();
+        
         CreateMap<Types, DTOType>().ReverseMap();
+        CreateMap<Types, DTOTypeInsert>().ReverseMap();
+
         CreateMap<LocationInfo, DTOLocationInfo>().ReverseMap();
+        
     }
 }
