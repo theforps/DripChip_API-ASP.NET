@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DripChip_API.Controllers
 {
-    [Route("[controller]")]
+    [Route("register")]
     [ApiController]
-    public class registrationController : ControllerBase
+    public class RegistrationController : ControllerBase
     {
         private readonly IRegisterService _registerService;
 
-        public registrationController(IRegisterService registerService)
+        public RegistrationController(IRegisterService registerService)
         {
             _registerService = registerService;
         }

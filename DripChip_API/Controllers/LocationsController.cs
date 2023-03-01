@@ -1,9 +1,7 @@
 using DripChip_API.Domain.DTO.Location;
-using DripChip_API.Domain.Models;
 using DripChip_API.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace DripChip_API.Controllers
 {
@@ -13,14 +11,14 @@ namespace DripChip_API.Controllers
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [Route("[controller]")]
+    [Route("location")]
     [Authorize]
     [ApiController]
-    public class locationsController : ControllerBase
+    public class LocationsController : ControllerBase
     {
         private readonly ILocationService _locationService;
 
-        public locationsController(ILocationService locationService)
+        public LocationsController(ILocationService locationService)
         {
             _locationService = locationService;
         }

@@ -18,7 +18,7 @@ public class LocationService : ILocationService
         _mapper = mapper;
         _locationRepository = locationRepository;
     }
-    
+
     public async Task<IBaseResponse<Location>> GetById(long id)
     {
         try
@@ -68,7 +68,7 @@ public class LocationService : ILocationService
             }
 
             var result = await _locationRepository.AddLocation(location);
-            
+
             return new BaseResponse<Location>()
             {
                 StatusCode = StatusCode.OK,
@@ -101,7 +101,7 @@ public class LocationService : ILocationService
                     StatusCode = StatusCode.LocationAlreadyExist
                 };
             }
-            
+
             location.id = id;
 
             var findLoc = await _locationRepository.GetById(id);
@@ -116,7 +116,7 @@ public class LocationService : ILocationService
             }
 
             var result = await _locationRepository.UpdateLocation(location);
-            
+
             return new BaseResponse<Location>()
             {
                 StatusCode = StatusCode.OK,
@@ -147,7 +147,7 @@ public class LocationService : ILocationService
                     StatusCode = StatusCode.LocationNotFound
                 };
             }
-            
+
             var result = await _locationRepository.DeleteLocation(id);
 
             if (!result)
@@ -158,7 +158,7 @@ public class LocationService : ILocationService
                     StatusCode = StatusCode.LocationRelated
                 };
             }
-            
+
             return new BaseResponse<bool>()
             {
                 StatusCode = StatusCode.OK,

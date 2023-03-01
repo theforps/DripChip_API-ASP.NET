@@ -1,7 +1,6 @@
 using DripChip_API.DAL;
 using DripChip_API.DAL.Interfaces;
 using DripChip_API.DAL.Repositories;
-using DripChip_API.Domain.Models;
 using DripChip_API.Service.Handlers;
 using DripChip_API.Service.Implementations;
 using DripChip_API.Service.Interfaces;
@@ -55,18 +54,24 @@ namespace Drip_chip_API
                 });  
             });  
 
-            builder.Services.AddAutoMapper(typeof(UserMapping), typeof(AnimalMapping), typeof(LocationMapping));
+            builder.Services.AddAutoMapper(
+                typeof(UserMapping), 
+                typeof(AnimalMapping), 
+                typeof(LocationMapping),
+                typeof(TypeMapping)
+                );
             
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
             builder.Services.AddScoped<IRegisterRepository, RegisterRepository>();
             builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+            builder.Services.AddScoped<ITypeRepository, TypeRepository>();
             
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IAnimalService, AnimalService>();
             builder.Services.AddScoped<IRegisterService, RegisterService>();
             builder.Services.AddScoped<ILocationService, LocationService>();
-            
+            builder.Services.AddScoped<ITypeService, TypeService>();
             
             var app = builder.Build();
 
@@ -80,7 +85,6 @@ namespace Drip_chip_API
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

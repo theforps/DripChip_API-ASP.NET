@@ -12,11 +12,12 @@ public class AnimalMapping : Profile
     {
         CreateMap<Animal, DTOAnimalSearch>().ReverseMap();
         CreateMap<Animal, LocationInfo>().ReverseMap();
-        
-        CreateMap<Types, DTOType>().ReverseMap();
-        CreateMap<Types, DTOTypeInsert>().ReverseMap();
-
-        CreateMap<LocationInfo, DTOLocationInfo>().ReverseMap();
-        
+        CreateMap<Animal, DTOAnimal>()
+            .ForMember(dest 
+                => dest.visitedLocations, opt 
+                => opt.MapFrom(src => src.visitedLocations.Select(y => y.id).ToList()))
+            .ForMember(dest 
+                => dest.animalTypes, opt 
+                => opt.MapFrom(src => src.animalTypes.Select(y => y.id).ToList()));
     }
 }

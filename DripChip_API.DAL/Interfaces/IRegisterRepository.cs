@@ -1,11 +1,11 @@
 ﻿
-namespace DripChip_API.DAL.Interfaces;
+using DripChip_API.Domain.Models;
 
-using Domain.DTO;
+namespace DripChip_API.DAL.Interfaces;
 
 public interface IRegisterRepository
 {
-    Task Create(DTOUserRegistration user);
-    Task<DTOUser> GetByEmail(string email);
+    Task Create(User user);
+    Task<User> GetByEmail(string email);
     Task<bool> GetUser(string login, string password);
 }

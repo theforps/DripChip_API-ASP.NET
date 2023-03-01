@@ -1,29 +1,35 @@
-﻿using DripChip_API.DAL.Interfaces;
+﻿using AutoMapper;
+using DripChip_API.DAL.Interfaces;
 using DripChip_API.DAL.Response;
 using DripChip_API.Domain.DTO;
 using DripChip_API.Domain.Enums;
 using DripChip_API.Domain.Models;
 using DripChip_API.Service.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace DripChip_API.Service.Implementations;
 
 public class RegisterService : IRegisterService
 {
     private readonly IRegisterRepository _registerRepository;
+    private readonly IMapper _mapper;
 
-    public RegisterService(IRegisterRepository registerRepository)
+    public RegisterService(IRegisterRepository registerRepository, IMapper mapper)
     {
+        _mapper = mapper;
         _registerRepository = registerRepository;
     }
     
-    public async Task<IBaseResponse<DTOUser>> CreateUser(DTOUserRegistration user)
+    public async Task<IBaseResponse<DTOUser>> CreateUser(DTOUserRegistration entity)
     {
         try
         {
+            var user = _mapper.Map<User>(entity);
+            
             await _registerRepository.Create(user);
 
-            var result = await _registerRepository.GetByEmail(user.email);
+            var response = await _registerRepository.GetByEmail(user.email);
+
+            var result = _mapper.Map<DTOUser>(response);
 
             return new BaseResponse<DTOUser>()
             {

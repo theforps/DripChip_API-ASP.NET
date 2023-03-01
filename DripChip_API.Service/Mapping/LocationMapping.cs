@@ -9,5 +9,6 @@ public class LocationMapping:Profile
     public LocationMapping()
     {
         CreateMap<Location, DTOLocation>().ReverseMap();
+        CreateMap<LocationInfo, DTOLocationInfo>().ReverseMap();
     }
 }

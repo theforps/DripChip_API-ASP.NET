@@ -1,6 +1,5 @@
 ﻿using DripChip_API.DAL.Response;
 using DripChip_API.Domain.DTO;
-using DripChip_API.Domain.Models;
 
 namespace DripChip_API.Service.Interfaces;
 

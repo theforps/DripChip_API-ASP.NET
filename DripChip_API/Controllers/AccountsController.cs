@@ -11,14 +11,14 @@ namespace DripChip_API.Controllers
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [Authorize]
-    [Route("[controller]")]
+    [Route("accounts")]
     [ApiController]
-    public class accountsController : ControllerBase
+    public class AccountsController : ControllerBase
     {
         private readonly IAccountService _accountService;
         private readonly IRegisterService _registerService;
 
-        public accountsController(IAccountService accountService, IRegisterService registerService)
+        public AccountsController(IAccountService accountService, IRegisterService registerService)
         {
             _registerService = registerService;
             _accountService = accountService;

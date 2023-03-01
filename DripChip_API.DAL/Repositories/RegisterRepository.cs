@@ -1,5 +1,4 @@
 ﻿using DripChip_API.DAL.Interfaces;
-using DripChip_API.Domain.DTO;
 using DripChip_API.Domain.Models;
 
 namespace DripChip_API.DAL.Repositories;
@@ -15,46 +14,27 @@ public class RegisterRepository: IRegisterRepository
         _db = db;
     }
     
-    public async Task Create(DTOUserRegistration user)
+    public async Task Create(User user)
     {
-        var account = new User()
-        {
-            firstName = user.firstName,
-            lastName = user.lastName,
-            email = user.email,
-            password = user.password
-        };
-        
-        await _db.Users.AddAsync(account);
+        await _db.Users.AddAsync(user);
         await _db.SaveChangesAsync();
     }
-    public async Task<DTOUser> GetByEmail(string email)
+    public async Task<User> GetByEmail(string email)
     {
         var result = await _db.Users
-            .Select(x => new DTOUser()
-            {
-                lastName = x.lastName,
-                firstName = x.firstName,
-                email = x.email,
-                id = x.id
-            }).AsNoTracking()
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.email == email);
 
-        if (result != null)
-            return result;
-
-        return new DTOUser();
+        return result;
     }
 
     public async Task<bool> GetUser(string login, string password)
     {
-        var user = await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.email == login && x.password == password);
-        
-        if (user != null)
-        {
-            return true;
-        }
+        var user = await _db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x 
+            => x.email == login && x.password == password);
 
-        return false;
+        return user != null;
     }
 }
