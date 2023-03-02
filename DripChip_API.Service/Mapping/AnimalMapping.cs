@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using DripChip_API.Domain.DTO.Animal;
-using DripChip_API.Domain.DTO.Location;
-using DripChip_API.Domain.DTO.Type;
 using DripChip_API.Domain.Models;
 
 namespace DripChip_API.Service.Mapping;
@@ -11,7 +9,9 @@ public class AnimalMapping : Profile
     public AnimalMapping()
     {
         CreateMap<Animal, DTOAnimalSearch>().ReverseMap();
+        
         CreateMap<Animal, LocationInfo>().ReverseMap();
+        
         CreateMap<Animal, DTOAnimal>()
             .ForMember(dest 
                 => dest.visitedLocations, opt 
@@ -19,5 +19,11 @@ public class AnimalMapping : Profile
             .ForMember(dest 
                 => dest.animalTypes, opt 
                 => opt.MapFrom(src => src.animalTypes.Select(y => y.id).ToList()));
+        
+        CreateMap<DTOAnimal, Animal>()
+            .ForMember(x => x.animalTypes, opt => opt.Ignore())
+            .ForMember(x => x.visitedLocations, opt => opt.Ignore());
+
+        CreateMap<DTOAnimal, DTOAnimalAdd>().ReverseMap();
     }
 }

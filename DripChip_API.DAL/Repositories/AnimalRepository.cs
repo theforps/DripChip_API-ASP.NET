@@ -44,6 +44,14 @@ public class AnimalRepository : IAnimalRepository
         return result;
     }
 
+    public async Task<Animal> Add(Animal entity)
+    {
+        var result = _db.Animals.AddAsync(entity).Result.Entity;
+        await _db.SaveChangesAsync();
+
+        return result;
+    }
+
     public List<LocationInfo> GetAnimalLocations(long id, int from, int size, DateTime start, DateTime end)
     {
 

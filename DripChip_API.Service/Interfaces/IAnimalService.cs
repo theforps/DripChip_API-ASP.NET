@@ -7,6 +7,7 @@ namespace DripChip_API.Service.Interfaces;
 public interface IAnimalService
 {
     Task<IBaseResponse<DTOAnimal>> GetAnimal(long id);
-    Task<IBaseResponse<List<DTOAnimal>>> GetAnimalByParam(DTOAnimalSearch animal);
-    Task<IBaseResponse<List<DTOLocationInfo>>> GetLocationStory(long id, DTOAnimalSearchLocation animal);
+    Task<IBaseResponse<List<DTOAnimal>>> GetAnimalByParam(DTOAnimalSearch entity);
+    Task<IBaseResponse<DTOAnimal>> AddAnimal(DTOAnimalAdd entity);
+    Task<IBaseResponse<List<DTOLocationInfo>>> GetLocationStory(long id, DTOAnimalSearchLocation entity);
 }

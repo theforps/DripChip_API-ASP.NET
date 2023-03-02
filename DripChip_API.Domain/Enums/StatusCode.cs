@@ -23,4 +23,8 @@ public enum StatusCode
     AuthorizationDataIsEmpty = 501,
     
     ServerError = 500,
+    
+    Invalid = 600,
+    NotFound = 601,
+    Conflict = 602
 }

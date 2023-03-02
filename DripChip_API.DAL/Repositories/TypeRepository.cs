@@ -23,6 +23,13 @@ public class TypeRepository : ITypeRepository
         return new Types();
     }
 
+    public async Task<List<Types>> GetTypesById(List<long> types)
+    {
+        var findTypes = _db.Types.Where(x => types.Contains(x.id)).ToList();
+
+        return findTypes;
+    }
+
     public async Task<bool> CheckTypeExist(Types type)
     {
         var check = await _db.Types

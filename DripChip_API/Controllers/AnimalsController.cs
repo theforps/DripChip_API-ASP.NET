@@ -23,8 +23,6 @@ namespace DripChip_API.Controllers
             _animalService = animalService;
         }
 
-        #region Animal
-        
         [HttpGet("{animalId:long?}")]
         public async Task<ActionResult> GetAnimalById(long animalId)
         {
@@ -39,7 +37,7 @@ namespace DripChip_API.Controllers
             {
                 return NotFound(animal.Description);
             }
-            
+
             return Ok(animal.Data);
         }
         
@@ -65,10 +63,37 @@ namespace DripChip_API.Controllers
             {
                 return BadRequest(response.Description);
             }
-            
+
             return Ok(response.Data);
         }
-        #endregion
+
+        [HttpPost]
+        public async Task<ActionResult> AddAnimal([FromBody] DTOAnimalAdd entity)
+        {
+            if (HttpContext.User.Identity.Name == Domain.Enums.StatusCode.AuthorizationDataIsEmpty.ToString())
+            {
+                return Unauthorized("Не авторизован");
+            }
+
+            var response = await _animalService.AddAnimal(entity);
+
+            if (response.StatusCode == Domain.Enums.StatusCode.Invalid)
+            {
+                return BadRequest(response.Description);
+            }
+            
+            if (response.StatusCode == Domain.Enums.StatusCode.NotFound)
+            {
+                return NotFound(response.Description);
+            }
+            
+            if (response.StatusCode == Domain.Enums.StatusCode.Conflict)
+            {
+                return Conflict(response.Description);
+            }
+
+            return Created("", response.Data);
+        }
 
         #region Location
         [HttpGet("{animalId:long?}/locations")]

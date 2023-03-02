@@ -18,12 +18,7 @@ public class AccountRepository : IAccountRepository
     {
         var result = await _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.id == id);
 
-        if (result != null)
-        {
-            return  result;
-        }
-
-        return new User();
+        return result;
     }
     
     public List<User> GetUsersByParams(User userSearch, int from, int size)
