@@ -1,5 +1,4 @@
 ﻿using DripChip_API.DAL.Interfaces;
-using DripChip_API.Domain.DTO.Animal;
 using DripChip_API.Domain.Models;
 
 namespace DripChip_API.DAL.Repositories;
@@ -47,6 +46,14 @@ public class AnimalRepository : IAnimalRepository
     public async Task<Animal> Add(Animal entity)
     {
         var result = _db.Animals.AddAsync(entity).Result.Entity;
+        await _db.SaveChangesAsync();
+
+        return result;
+    }
+
+    public async Task<Animal> Update(Animal entity)
+    {
+        var result = _db.Animals.Update(entity).Entity;
         await _db.SaveChangesAsync();
 
         return result;

@@ -210,6 +210,11 @@ public class AnimalService : IAnimalService
         }
     }
 
+    public Task<IBaseResponse<DTOAnimal>> UpdateAnimal(DTOAnimalUpdate entity)
+    {
+        throw new NotImplementedException();
+    }
+
     #endregion
 
     #region Location

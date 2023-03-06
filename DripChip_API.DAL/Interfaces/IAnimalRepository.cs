@@ -8,5 +8,6 @@ public interface IAnimalRepository
     Task<Animal> GetById(long id);
     List<Animal> GetByParams(Animal entity, int from, int size, DateTime start, DateTime end);
     Task<Animal> Add(Animal entity);
+    Task<Animal> Update(Animal entity);
     List<LocationInfo> GetAnimalLocations(long id, int from, int size, DateTime start, DateTime end);
 }
