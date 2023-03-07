@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DripChip_API.Controllers
 {
+    using Domain.Enums;
+
     [Route("animals")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -24,7 +26,7 @@ namespace DripChip_API.Controllers
         }
 
         [HttpGet("{animalId:long?}")]
-        public async Task<ActionResult> GetAnimalById(long animalId)
+        public async Task<ActionResult> GetById(long animalId)
         {
             if (animalId <= 0)
             {
@@ -42,7 +44,7 @@ namespace DripChip_API.Controllers
         }
         
         [HttpGet("search")]
-        public async Task<ActionResult> GetAnimal([FromQuery] DTOAnimalSearch animal)
+        public async Task<ActionResult> Get([FromQuery] DTOAnimalSearch animal)
         {
 
             if (!ModelState.IsValid || (animal.lifeStatus != null && animal.lifeStatus != "ALIVE" && animal.lifeStatus != "DEAD") ||
@@ -68,7 +70,7 @@ namespace DripChip_API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddAnimal([FromBody] DTOAnimalAdd entity)
+        public async Task<ActionResult> Add([FromBody] DTOAnimalAdd entity)
         {
             if (HttpContext.User.Identity.Name == Domain.Enums.StatusCode.AuthorizationDataIsEmpty.ToString())
             {
@@ -93,6 +95,26 @@ namespace DripChip_API.Controllers
             }
 
             return Created("", response.Data);
+        }
+
+        [HttpPut("{animalId:long?}")]
+        public async Task<ActionResult> Update([FromBody] DTOAnimalUpdate entity, long animalId)
+        {
+            if (!ModelState.IsValid || 
+                !Enum.IsDefined(typeof(LifeStatus), entity.lifeStatus) ||
+                !Enum.IsDefined(typeof(Gender), entity.gender))
+            {
+                return BadRequest("Данные не валидны");
+            }
+
+            if (HttpContext.User.Identity.Name == Domain.Enums.StatusCode.AuthorizationDataIsEmpty.ToString())
+            {
+                return Unauthorized("Не авторизован");
+            }
+
+            var response = await _animalService.UpdateAnimal(entity, animalId);
+            
+            return Ok(response.Data);
         }
 
         #region Location

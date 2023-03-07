@@ -209,10 +209,90 @@ public class AnimalService : IAnimalService
             };
         }
     }
-
-    public Task<IBaseResponse<DTOAnimal>> UpdateAnimal(DTOAnimalUpdate entity)
+    public async Task<IBaseResponse<DTOAnimal>> UpdateAnimal(DTOAnimalUpdate entity, long id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var checkChipper = await _accountRepository.GetUserById(entity.chepperId);
+
+            if (checkChipper == null)
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.NotFound,
+                    Description = "Пользователь не найден"
+                };
+            }
+
+            var checkAnimal = await _animalRepository.GetById(id);
+
+            if (checkAnimal == null)
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.NotFound,
+                    Description = "Животное не найдено"
+                };
+            }
+
+            var checkLocation = await _locationRepository.GetById(entity.chippingLocationId);
+
+            if (checkLocation == null)
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.NotFound,
+                    Description = "Точка локации не найдена"
+                };
+            }
+
+            if (entity.lifeStatus == "ALIVE" && checkAnimal.lifeStatus == "DEAD")
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.Invalid,
+                    Description = "Попытка оживить мертвое животное"
+                };
+            }
+
+            if (entity.chippingLocationId == checkAnimal.visitedLocations[0].id)
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.Invalid,
+                    Description = "Новая точка чипирования совпадает с первой посещенной точкой локации"
+                };
+            }
+
+            var animalForSetTimeDead = _mapper.Map<DTOAnimal>(entity);
+
+            if (animalForSetTimeDead.lifeStatus == "DEAD" && checkAnimal.lifeStatus == "ALIVE")
+            {
+                animalForSetTimeDead.deathDateTime = DateTime.UtcNow;
+            }
+
+            var animalChanges = _mapper.Map<Animal>(animalForSetTimeDead);
+
+            var animalUnity = _mapper.Map(checkAnimal,animalChanges);
+
+            var response = await _animalRepository.Update(animalUnity);
+
+            var result = _mapper.Map<DTOAnimal>(response);
+            
+            return new BaseResponse<DTOAnimal>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = result
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<DTOAnimal>()
+            {
+                Description = $"UpdateAnimal : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
     }
 
     #endregion
