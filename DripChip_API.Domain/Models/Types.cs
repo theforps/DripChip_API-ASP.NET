@@ -10,5 +10,5 @@ public class Types
     [JsonIgnore]
     public string type { get; set; }
     [JsonIgnore]
-    public List<Animal> Animals { get; set; } 
+    public List<Animal> animals {get; set;}
 }

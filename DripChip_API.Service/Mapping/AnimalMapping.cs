@@ -24,11 +24,11 @@ public class AnimalMapping : Profile
             .ForMember(x => x.animalTypes, opt => opt.Ignore())
             .ForMember(x => x.visitedLocations, opt => opt.Ignore());
 
-        CreateMap<DTOAnimal, DTOAnimalAdd>().ReverseMap();
+        CreateMap<DTOAnimalAdd, Animal>()
+            .ForMember(x => x.animalTypes, opt => opt.Ignore());
 
-        CreateMap<DTOAnimal, DTOAnimalUpdate>().ReverseMap();
-        
-        CreateMap<Animal, Animal>()
-            .ForAllMembers(o => o.Condition((source, destination, member) => member != null));
+        CreateMap<DTOAnimalUpdate, Animal>()
+            .ForAllMembers(o => 
+                o.Condition((source, destination, member) => member != null));
     }
 }

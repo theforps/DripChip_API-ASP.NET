@@ -18,6 +18,8 @@ public enum StatusCode
     AccountNotCreated = 400,
     AccountNotDeleted = 401,
     
+    AnimalLeft = 701,
+    
     OK = 200,
     
     AuthorizationDataIsEmpty = 501,

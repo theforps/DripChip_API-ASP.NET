@@ -17,7 +17,6 @@ public class AnimalRepository : IAnimalRepository
     public async Task<Animal> GetById(long id)
     {
         var result = await _db.Animals
-            .AsNoTracking()
             .Include(x => x.visitedLocations)
             .Include(x => x.animalTypes)
             .FirstOrDefaultAsync(x => x.id == id);
@@ -53,12 +52,33 @@ public class AnimalRepository : IAnimalRepository
 
     public async Task<Animal> Update(Animal entity)
     {
-        var result = _db.Animals.Update(entity).Entity;
+        _db.Animals.Update(entity);
         await _db.SaveChangesAsync();
+
+        return entity;
+    }
+
+    public async Task Delete(long id)
+    {
+        var animal = await _db.Animals.AsNoTracking().FirstOrDefaultAsync(x => x.id == id);
+        
+        _db.Animals.Remove(animal);
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task<Animal> AddType(long animalId ,long typeId)
+    {
+        var animal = await _db.Animals.AsNoTracking().FirstOrDefaultAsync(x => x.id == animalId);
+        var type = await _db.Types.AsNoTracking().FirstOrDefaultAsync(x => x.id == typeId);
+        
+        animal.animalTypes.Add(type);
+        await _db.SaveChangesAsync();
+        
+        var result = await _db.Animals.AsNoTracking().FirstOrDefaultAsync(x => x.id == animalId);
 
         return result;
     }
-
+    
     public List<LocationInfo> GetAnimalLocations(long id, int from, int size, DateTime start, DateTime end)
     {
 

@@ -29,7 +29,8 @@ namespace DripChip_API.Controllers
                 return BadRequest("Невалидные входные данные");
             }
 
-            if (HttpContext.User.Identity.IsAuthenticated)
+            if (HttpContext.User.Identity.IsAuthenticated && 
+                HttpContext.User.Identity.Name != Domain.Enums.StatusCode.AuthorizationDataIsEmpty.ToString())
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
             }

@@ -26,8 +26,6 @@ public class AnimalService : IAnimalService
         _accountRepository = accountRepository;
         _locationRepository = locationRepository;
     }
-
-    #region Animal
     
     public async Task<IBaseResponse<DTOAnimal>> GetAnimal(long id)
     {
@@ -35,9 +33,7 @@ public class AnimalService : IAnimalService
         {
             var response = await _animalRepository.GetById(id);
 
-            var animal = _mapper.Map<DTOAnimal>(response);
-
-            if (animal == null)
+            if (response == null)
             {
                 return new BaseResponse<DTOAnimal>()
                 {
@@ -45,6 +41,8 @@ public class AnimalService : IAnimalService
                     StatusCode = StatusCode.AnimalNotFound
                 };
             }
+            
+            var animal = _mapper.Map<DTOAnimal>(response);
             
             return new BaseResponse<DTOAnimal>()
             {
@@ -60,10 +58,7 @@ public class AnimalService : IAnimalService
                 StatusCode = StatusCode.ServerError,
             };
         }
-        
-            
     }
-    
     public async Task<IBaseResponse<List<DTOAnimal>>> GetAnimalByParam(DTOAnimalSearch animal)
     {
         try
@@ -99,7 +94,6 @@ public class AnimalService : IAnimalService
             };
         }
     }
-
     public async Task<IBaseResponse<DTOAnimal>> AddAnimal(DTOAnimalAdd entity)
     {
         try
@@ -136,17 +130,6 @@ public class AnimalService : IAnimalService
                 }
             }
 
-            var gender = new[] { "MALE", "FEMALE", "OTHER" };
-
-            if (!gender.Contains(entity.gender))
-            {
-                return new BaseResponse<DTOAnimal>()
-                {
-                    Description = "Неправильно указан гендер (MALE, FEMALE, OTHER)",
-                    StatusCode = StatusCode.Invalid
-                };
-            }
-
             var checkChipper = await _accountRepository.GetUserById(entity.chipperId);
 
             if (checkChipper == null)
@@ -169,27 +152,27 @@ public class AnimalService : IAnimalService
                 };
             }
             
-            var checkDuplicateType = entity.animalTypes;
-            checkDuplicateType.Sort();
-            for (int i = 1; i < checkDuplicateType.Count; i++)
+            if (entity.animalTypes.Count > 1)
             {
-                if (checkDuplicateType[i] == checkDuplicateType[i - 1])
+                var checkDuplicateType = entity.animalTypes;
+                checkDuplicateType.Sort();
+                
+                for (int i = 1; i < checkDuplicateType.Count; i++)
                 {
-                    return new BaseResponse<DTOAnimal>()
+                    if (checkDuplicateType[i] == checkDuplicateType[i - 1])
                     {
-                        Description = "Дублирования типа животного",
-                        StatusCode = StatusCode.Conflict
-                    };
+                        return new BaseResponse<DTOAnimal>()
+                        {
+                            Description = "Дублирования типа животного",
+                            StatusCode = StatusCode.Conflict
+                        };
+                    }
                 }
             }
 
-            var temp = _mapper.Map<DTOAnimal>(entity);
-            temp.lifeStatus = "ALIVE";
-            temp.chippingDateTime = DateTime.UtcNow;
-            
-            var animal = _mapper.Map<Animal>(temp);
+            var animal = _mapper.Map<Animal>(entity);
             animal.animalTypes = await _typeRepository.GetTypesById(entity.animalTypes);
-            
+
             var response = await _animalRepository.Add(animal);
 
             var result = _mapper.Map<DTOAnimal>(response);
@@ -213,7 +196,7 @@ public class AnimalService : IAnimalService
     {
         try
         {
-            var checkChipper = await _accountRepository.GetUserById(entity.chepperId);
+            var checkChipper = await _accountRepository.GetUserById(entity.chipperId);
 
             if (checkChipper == null)
             {
@@ -254,8 +237,12 @@ public class AnimalService : IAnimalService
                     Description = "Попытка оживить мертвое животное"
                 };
             }
+            else if (entity.lifeStatus == "DEAD" && checkAnimal.lifeStatus == "ALIVE")
+            {
+                entity.deathDateTime = DateTime.UtcNow;
+            }
 
-            if (entity.chippingLocationId == checkAnimal.visitedLocations[0].id)
+            if (checkAnimal.visitedLocations.Any() && entity.chippingLocationId == checkAnimal.visitedLocations[0].id)
             {
                 return new BaseResponse<DTOAnimal>()
                 {
@@ -264,19 +251,13 @@ public class AnimalService : IAnimalService
                 };
             }
 
-            var animalForSetTimeDead = _mapper.Map<DTOAnimal>(entity);
+            //берет объект из бд и соединяет с изменениями
+            var animalUnity = _mapper.Map(entity, checkAnimal);
 
-            if (animalForSetTimeDead.lifeStatus == "DEAD" && checkAnimal.lifeStatus == "ALIVE")
-            {
-                animalForSetTimeDead.deathDateTime = DateTime.UtcNow;
-            }
-
-            var animalChanges = _mapper.Map<Animal>(animalForSetTimeDead);
-
-            var animalUnity = _mapper.Map(checkAnimal,animalChanges);
-
+            //обновляет объект
             var response = await _animalRepository.Update(animalUnity);
-
+            
+            
             var result = _mapper.Map<DTOAnimal>(response);
             
             return new BaseResponse<DTOAnimal>()
@@ -294,8 +275,103 @@ public class AnimalService : IAnimalService
             };
         }
     }
+    public async Task<IBaseResponse<bool>> DeleteAnimal(long id)
+    {
+        try
+        {
+            var checkAnimal = await _animalRepository.GetById(id);
 
-    #endregion
+            if (checkAnimal == null)
+            {
+                return new BaseResponse<bool>
+                {
+                    StatusCode = StatusCode.AnimalNotFound,
+                    Description = "Животное не найдено"
+                };
+            }
+
+            var visitedLoc = checkAnimal.visitedLocations;
+            
+            if (visitedLoc.Any() && 
+                visitedLoc.Last().id != checkAnimal.chippingLocationId)
+            {
+                return new BaseResponse<bool>
+                {
+                    StatusCode = StatusCode.AnimalLeft,
+                    Description = "Животное покинуло локацию чипирования"
+                };
+            }
+
+            await _animalRepository.Delete(id);
+            
+            return new BaseResponse<bool>
+            {
+                StatusCode = StatusCode.OK,
+                Data = true
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<bool>()
+            {
+                Description = $"DeleteAnimal : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
+    }
+
+    public async Task<IBaseResponse<DTOAnimal>> AddType(long animalId, long typeId)
+    {
+        try
+        {
+            var checkType = await _typeRepository.GetTypeById(typeId);
+            if (checkType == null)
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.TypeNotFound,
+                    Description = "Тип не найден"
+                };
+            }
+
+            var checkAnimal = await _animalRepository.GetById(animalId);
+            if (checkAnimal == null)
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.AnimalNotFound,
+                    Description = "Животное не найдено"
+                };
+            }
+
+            if (checkAnimal.animalTypes.Contains(checkType))
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.TypeAlreadyExist,
+                    Description = "Тип уже существует"
+                };
+            }
+
+            var response = await _animalRepository.AddType(animalId, typeId);
+
+            var result = _mapper.Map<DTOAnimal>(response);
+
+            return new BaseResponse<DTOAnimal>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = result
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<DTOAnimal>()
+            {
+                Description = $"AddTypeAnimal : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
+    }
 
     #region Location
 

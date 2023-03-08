@@ -119,8 +119,7 @@ namespace DripChip_API.Controllers
             {
                 return BadRequest("Связана с животным");
             }
-
-            if (result.StatusCode == Domain.Enums.StatusCode.LocationNotFound)
+            else if (result.StatusCode == Domain.Enums.StatusCode.LocationNotFound)
             {
                 return NotFound(result.Description);
             }

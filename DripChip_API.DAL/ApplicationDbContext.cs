@@ -20,4 +20,12 @@ public class ApplicationDbContext :DbContext
     {
         optionsBuilder.UseSqlite("Filename=..\\DripChip_API.DAL\\Data\\DripChip.sqlite");
     }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Animal>()
+            .HasMany(x => x.animalTypes)
+            .WithMany(y => y.animals);
+        
+    }
 }
