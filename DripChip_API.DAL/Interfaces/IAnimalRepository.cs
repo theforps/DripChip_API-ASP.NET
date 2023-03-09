@@ -10,5 +10,6 @@ public interface IAnimalRepository
     Task<Animal> Update(Animal entity);
     Task Delete(long id);
     Task<Animal> AddType(long animalId, long typeId);
-    List<LocationInfo> GetAnimalLocations(long id, int from, int size, DateTime start, DateTime end);
+    Task<Animal> EditType(long animalId, long oldTypeId, long newTypeId);
+    Task<Animal> DeleteType(long animalId, long typeId);
 }

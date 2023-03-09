@@ -19,6 +19,7 @@ public enum StatusCode
     AccountNotDeleted = 401,
     
     AnimalLeft = 701,
+    TypeIsSingle = 702,
     
     OK = 200,
     

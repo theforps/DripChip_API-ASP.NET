@@ -26,7 +26,7 @@ namespace DripChip_API.Controllers
         {
             _animalService = animalService;
         }
-
+        
         [HttpGet("{animalId:long?}")]
         public async Task<ActionResult> GetById(long animalId)
         {
@@ -159,51 +159,5 @@ namespace DripChip_API.Controllers
             
             return Ok();
         }
-
-        [HttpPost("{animalId:long?}/types/{typeId:long?}")]
-        public async Task<ActionResult> AddTypeToAnimal(long animalId, long typeId)
-        {
-            if (animalId <= 0 || typeId <= 0)
-            {
-                return BadRequest("Неправильные входные данные");
-            }
-            
-            
-            
-            return Ok();
-        }
-
-        #region Location
-        [HttpGet("{animalId:long?}/locations")]
-        public async Task<ActionResult> GetAnimalLocations(long animalId, [FromQuery] DTOAnimalSearchLocation animalSearchLocation)
-        {
-            if (!ModelState.IsValid || animalId <= 0)
-            {
-                return BadRequest();
-            }
-
-            if (animalSearchLocation.startDateTime != String.Format(animalSearchLocation.startDateTime, "s") || 
-                animalSearchLocation.endDateTime != String.Format(animalSearchLocation.endDateTime, "s"))
-            {
-                return BadRequest("Неправильный формат даты");
-            }
-            
-            var animal = await _animalService.GetAnimal(animalId);
-
-            if (animal.StatusCode == Domain.Enums.StatusCode.AnimalNotFound)
-            {
-                return NotFound(animal.Description);
-            }
-
-            var result = await _animalService.GetLocationStory(animalId, animalSearchLocation);
-            
-            if (result.StatusCode == Domain.Enums.StatusCode.LocationStoryNotFound || result.Data == null)
-            {
-                return BadRequest(result.Description);
-            }
-            
-            return Ok(result.Data);
-        }
-        #endregion
     }
 }
