@@ -68,32 +68,46 @@ public class AnimalRepository : IAnimalRepository
 
     public async Task<Animal> AddType(long animalId ,long typeId)
     {
-        var animal = await _db.Animals.AsNoTracking().FirstOrDefaultAsync(x => x.id == animalId);
-        var type = await _db.Types.AsNoTracking().FirstOrDefaultAsync(x => x.id == typeId);
+        var animal = await _db.Animals.FirstOrDefaultAsync(x => x.id == animalId);
+        var type = await _db.Types.FirstOrDefaultAsync(x => x.id == typeId);
         
         animal.animalTypes.Add(type);
         await _db.SaveChangesAsync();
         
-        var result = await _db.Animals.AsNoTracking().FirstOrDefaultAsync(x => x.id == animalId);
+        var result = await _db.Animals.FirstOrDefaultAsync(x => x.id == animalId);
 
         return result;
     }
-    
-    public List<LocationInfo> GetAnimalLocations(long id, int from, int size, DateTime start, DateTime end)
-    {
 
-        var result = _db.Animals
-            .AsNoTracking()
-            .Where(x => x.id == id)
-            .SelectMany(x => x.visitedLocations.Where(y =>
-                y.dateTimeOfVisitLocationPoint >= start &&
-                y.dateTimeOfVisitLocationPoint <= end)
-                .OrderBy(y => y.dateTimeOfVisitLocationPoint)
-                .Skip(from)
-                .Take(size))
-            .Include(x => x.locationPoint)
-            .ToList();
-        
-        return result;
+    public async Task<Animal> EditType(long animalId, long oldTypeId, long newTypeId)
+    {
+        var animal = await _db.Animals.FirstOrDefaultAsync(x => x.id == animalId);
+
+        var oldType = animal.animalTypes.FirstOrDefault(x => x.id == oldTypeId);
+        var newType = await _db.Types.FirstOrDefaultAsync(x => x.id == newTypeId);
+
+        /*
+        animal.animalTypes.Remove(oldType);
+        animal.animalTypes.Add(newType);
+        */
+
+        var id = animal.animalTypes.IndexOf(oldType);
+        animal.animalTypes.Insert(id, newType);
+        animal.animalTypes.RemoveAt(id+1);
+
+        await _db.SaveChangesAsync();
+
+        return animal;
+    }
+
+    public async Task<Animal> DeleteType(long animalId, long typeId)
+    {
+        var animal = await _db.Animals.FirstOrDefaultAsync(x => x.id == animalId);
+        var type = await _db.Types.FirstOrDefaultAsync(x => x.id == typeId);
+
+        animal.animalTypes.Remove(type);
+        await _db.SaveChangesAsync();
+
+        return animal;
     }
 }
