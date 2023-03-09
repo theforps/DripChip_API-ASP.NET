@@ -11,6 +11,7 @@ namespace DripChip_API.Service.Implementations;
 
 public class AnimalService : IAnimalService
 {
+    #region DI
     private readonly IAnimalRepository _animalRepository;
     private readonly ITypeRepository _typeRepository;
     private readonly IAccountRepository _accountRepository;
@@ -26,7 +27,8 @@ public class AnimalService : IAnimalService
         _accountRepository = accountRepository;
         _locationRepository = locationRepository;
     }
-    
+    #endregion
+    #region Animal
     public async Task<IBaseResponse<DTOAnimal>> GetAnimal(long id)
     {
         try
@@ -319,7 +321,8 @@ public class AnimalService : IAnimalService
             };
         }
     }
-
+    #endregion
+    #region Type
     public async Task<IBaseResponse<DTOAnimal>> AddType(long animalId, long typeId)
     {
         try
@@ -344,7 +347,7 @@ public class AnimalService : IAnimalService
                 };
             }
 
-            if (checkAnimal.animalTypes.Contains(checkType))
+            if (checkAnimal.animalTypes.Any(x => x.id == checkType.id))
             {
                 return new BaseResponse<DTOAnimal>()
                 {
@@ -372,46 +375,144 @@ public class AnimalService : IAnimalService
             };
         }
     }
-
-    #region Location
-
-    public async Task<IBaseResponse<List<DTOLocationInfo>>> GetLocationStory(long id, DTOAnimalSearchLocation animal)
+    public async Task<IBaseResponse<DTOAnimal>> EditType(long animalId, DTOEditType entity)
     {
         try
         {
-            var response = _animalRepository.GetAnimalLocations(
-                id,
-                animal.from,
-                animal.size,
-                DateTime.Parse(animal.startDateTime),
-                DateTime.Parse(animal.endDateTime));
-
-            var locationStory = _mapper.Map<List<DTOLocationInfo>>(response);
+            var checkOldType = await _typeRepository.GetTypeById(entity.oldTypeId);
+            var checkNewType = await _typeRepository.GetTypeById(entity.newTypeId);
+            var checkAnimal = await _animalRepository.GetById(animalId);
             
-            if (!locationStory.Any())
+            if (checkOldType == null)
             {
-                return new BaseResponse<List<DTOLocationInfo>>()
+                return new BaseResponse<DTOAnimal>()
                 {
-                    Description = "Локации с такими параметрами не найдены",
-                    StatusCode = StatusCode.LocationStoryNotFound
+                    StatusCode = StatusCode.TypeNotFound,
+                    Description = "Старый тип не существует"
                 };
             }
-            
-            return new BaseResponse<List<DTOLocationInfo>>()
+            else if (checkNewType == null)
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.TypeNotFound,
+                    Description = "Новый тип не существует"
+                };
+            }
+            else if (checkAnimal == null)
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.AnimalNotFound,
+                    Description = "Животное не найдено"
+                };
+            }
+            else if (!checkAnimal.animalTypes.Any(x => x.id == checkOldType.id))
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.TypeNotFound,
+                    Description = "Старый тип не найден"
+                };
+            }
+            else if (checkAnimal.animalTypes.Any(x => x.id == checkNewType.id))
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.TypeAlreadyExist,
+                    Description = "Новый тип уже содержится у животного"
+                };
+            }
+            else if (checkAnimal.animalTypes.Any(x => x.id == checkNewType.id) &&
+                     checkAnimal.animalTypes.Any(x => x.id == checkOldType.id))
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.TypeAlreadyExist,
+                    Description = "Старый и новый тип уже содержится у животного"
+                };
+            }
+
+            var response = await _animalRepository.EditType(animalId, entity.oldTypeId, entity.newTypeId);
+
+            var result = _mapper.Map<DTOAnimal>(response);
+
+            return new BaseResponse<DTOAnimal>()
             {
                 StatusCode = StatusCode.OK,
-                Data = locationStory,
+                Data = result
             };
         }
         catch (Exception ex)
         {
-            return new BaseResponse<List<DTOLocationInfo>>()
+            return new BaseResponse<DTOAnimal>()
             {
-                Description = $"GetLocationStory : {ex.Message}",
+                Description = $"EditTypeAnimal : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
+    }    public async Task<IBaseResponse<DTOAnimal>> DeleteType(long animalId, long typeId)
+    {
+        try
+        {
+            var checkType = await _typeRepository.GetTypeById(typeId);
+            var checkAnimal = await _animalRepository.GetById(animalId);
+            
+            if (checkType == null)
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.TypeNotFound,
+                    Description = "Тип не существует"
+                };
+            }
+            else if (checkAnimal == null)
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.AnimalNotFound,
+                    Description = "Животное не найдено"
+                };
+            }
+            else if (!checkAnimal.animalTypes.Any(x => x.id == checkType.id))
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.TypeNotFound,
+                    Description = "Тип не найден"
+                };
+            }
+            else if (checkAnimal.animalTypes.Count == 1 &&
+                     checkAnimal.animalTypes[0].id == checkType.id)
+            {
+                return new BaseResponse<DTOAnimal>()
+                {
+                    StatusCode = StatusCode.TypeIsSingle,
+                    Description = "Тип единственный у животного"
+                };
+            }
+
+            var response = await _animalRepository.DeleteType(animalId, typeId);
+
+            var result = _mapper.Map<DTOAnimal>(response);
+
+            return new BaseResponse<DTOAnimal>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = result
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<DTOAnimal>()
+            {
+                Description = $"EditTypeAnimal : {ex.Message}",
                 StatusCode = StatusCode.ServerError,
             };
         }
     }
+
+    
 
     #endregion
 }
