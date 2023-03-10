@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DripChip_API.Domain.DTO.Animal;
 
@@ -15,5 +16,7 @@ public class DTOAnimalAdd
     [Required] public string gender { get; set; } 
 
     [Required] [Range(1, Int32.MaxValue)] public int chipperId { get; set; } 
-    [Required] [Range(1, long.MaxValue)] public long chippingLocationId { get; set; } 
+    [Required] [Range(1, long.MaxValue)] public long chippingLocationId { get; set; }
+    [JsonIgnore] public string lifeStatus = "ALIVE";
+    [JsonIgnore] public DateTime chippingDateTime = DateTime.UtcNow;
 }

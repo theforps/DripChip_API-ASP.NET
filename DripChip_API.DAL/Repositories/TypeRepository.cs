@@ -17,10 +17,7 @@ public class TypeRepository : ITypeRepository
     {
         var result = await _db.Types.AsNoTracking().FirstOrDefaultAsync(x => x.id == id);
 
-        if (result != null)
-            return result;
-
-        return new Types();
+        return result;
     }
 
     public async Task<List<Types>> GetTypesById(List<long> types)

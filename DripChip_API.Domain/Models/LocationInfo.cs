@@ -12,5 +12,5 @@ public class LocationInfo
     [JsonIgnore]
     public Location locationPoint { get; set; }
     [JsonIgnore]
-    public List<Animal> Animals { get; set; }
+    public Animal animal { get; set; }
 }

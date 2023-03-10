@@ -3,6 +3,7 @@ using System;
 using DripChip_API.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,27 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DripChipAPI.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230308111802_editModels")]
+    partial class editModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
-
-            modelBuilder.Entity("AnimalTypes", b =>
-                {
-                    b.Property<long>("animalTypesid")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("animalsid")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("animalTypesid", "animalsid");
-
-                    b.HasIndex("animalsid");
-
-                    b.ToTable("AnimalTypes");
-                });
 
             modelBuilder.Entity("DripChip_API.Domain.Models.Animal", b =>
                 {
@@ -119,11 +107,16 @@ namespace DripChipAPI.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<long?>("Animalid")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("type")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("id");
+
+                    b.HasIndex("Animalid");
 
                     b.ToTable("Types");
                 });
@@ -155,21 +148,6 @@ namespace DripChipAPI.DAL.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("AnimalTypes", b =>
-                {
-                    b.HasOne("DripChip_API.Domain.Models.Types", null)
-                        .WithMany()
-                        .HasForeignKey("animalTypesid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DripChip_API.Domain.Models.Animal", null)
-                        .WithMany()
-                        .HasForeignKey("animalsid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DripChip_API.Domain.Models.LocationInfo", b =>
                 {
                     b.HasOne("DripChip_API.Domain.Models.Animal", null)
@@ -185,8 +163,17 @@ namespace DripChipAPI.DAL.Migrations
                     b.Navigation("locationPoint");
                 });
 
+            modelBuilder.Entity("DripChip_API.Domain.Models.Types", b =>
+                {
+                    b.HasOne("DripChip_API.Domain.Models.Animal", null)
+                        .WithMany("animalTypes")
+                        .HasForeignKey("Animalid");
+                });
+
             modelBuilder.Entity("DripChip_API.Domain.Models.Animal", b =>
                 {
+                    b.Navigation("animalTypes");
+
                     b.Navigation("visitedLocations");
                 });
 #pragma warning restore 612, 618

@@ -51,7 +51,7 @@ namespace DripChip_API.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest("Неправельные входные данные");
             }
 
             if (HttpContext.User.Identity.Name == Domain.Enums.StatusCode.AuthorizationDataIsEmpty.ToString())
@@ -74,7 +74,7 @@ namespace DripChip_API.Controllers
         {
             if (!ModelState.IsValid || typeId <= 0)
             {
-                return BadRequest();
+                return BadRequest("Неправельные входные данные");
             }
             
             if (HttpContext.User.Identity.Name == Domain.Enums.StatusCode.AuthorizationDataIsEmpty.ToString())
@@ -104,7 +104,7 @@ namespace DripChip_API.Controllers
         {
             if (typeId <= 0)
             {
-                return BadRequest();
+                return BadRequest("Неправельные входные данные");
             }
 
             if (HttpContext.User.Identity.Name == Domain.Enums.StatusCode.AuthorizationDataIsEmpty.ToString())
