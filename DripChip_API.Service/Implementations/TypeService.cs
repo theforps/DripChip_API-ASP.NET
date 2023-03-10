@@ -25,9 +25,7 @@ public class TypeService : ITypeService
         {
             var response = await _typeRepository.GetTypeById(id);
 
-            var type = _mapper.Map<DTOType>(response);
-
-            if (type.type == null)
+            if (response == null)
             {
                 return new BaseResponse<DTOType>()
                 {
@@ -36,6 +34,8 @@ public class TypeService : ITypeService
                 };
             }
 
+            var type = _mapper.Map<DTOType>(response);
+            
             return new BaseResponse<DTOType>()
             {
                 StatusCode = StatusCode.OK,

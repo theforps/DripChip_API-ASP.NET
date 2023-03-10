@@ -33,11 +33,6 @@ namespace DripChip_API.Controllers
 
             var response = await _typeService.GetType(typeId);
 
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                return Unauthorized("Неверные авторизационные данные");
-            }
-            
             if (response.StatusCode == Domain.Enums.StatusCode.TypeNotFound)
             {
                 return NotFound(response.Description);
@@ -126,7 +121,7 @@ namespace DripChip_API.Controllers
                 return BadRequest(response.Description);
             }
             
-            return Ok(response.Data);
+            return Ok();
         }
     }
 }

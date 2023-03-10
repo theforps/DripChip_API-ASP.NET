@@ -68,4 +68,38 @@ public class LocationInfoService:ILocationInfoService
             };
         }
     }
+    public async Task<IBaseResponse<List<DTOLocationInfo>>> AddVisitedLocation(long animalId, long pointId)
+    {
+        try
+        {
+            var checkAnimal = await _animalRepository.GetById(animalId);
+
+            if (checkAnimal == null)
+            {
+                return new BaseResponse<List<DTOLocationInfo>>()
+                {
+                    Description = "Животное не найдено",
+                    StatusCode = StatusCode.AnimalNotFound
+                };
+            }
+            
+            var response = _locationInfoRepository.
+
+            
+            
+            return new BaseResponse<List<DTOLocationInfo>>()
+            {
+                StatusCode = StatusCode.OK,
+                Data = locationStory,
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<List<DTOLocationInfo>>()
+            {
+                Description = $"AddVisitedLocation : {ex.Message}",
+                StatusCode = StatusCode.ServerError,
+            };
+        }
+    }
 }

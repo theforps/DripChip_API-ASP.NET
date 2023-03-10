@@ -47,5 +47,18 @@ namespace DripChip_API.Controllers
             
             return Ok(response.Data);
         }
+
+        [HttpPost("{animalId:long?}/locations/{pointId:long?}")]
+        public async Task<ActionResult> AddVisitedLoc(long animalId, long pointId)
+        {
+            if (animalId <= 0 || pointId <= 0)
+            {
+                return BadRequest("Входные данные не валидны");
+            }
+            
+            
+
+            return Ok();
+        }
     }
 }

@@ -28,4 +28,15 @@ public class LocationInfoRepository: ILocationInfoRepository
         
         return result;
     }
+    public async Task<LocationInfo> Add(long animalId, LocationInfo entity)
+    {
+        var animal = await _db.Animals.FirstOrDefaultAsync(x => x.id == animalId);
+
+        var result = _db.LocationInfo.Add(entity).Entity;
+        
+        animal.visitedLocations.Add(entity);
+        await _db.SaveChangesAsync();
+
+        return result;
+    }
 }
