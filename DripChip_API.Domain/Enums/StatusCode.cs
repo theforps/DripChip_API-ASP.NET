@@ -20,6 +20,7 @@ public enum StatusCode
     
     AnimalLeft = 701,
     TypeIsSingle = 702,
+    AnimalIsDead = 703,
     
     OK = 200,
     

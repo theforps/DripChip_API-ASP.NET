@@ -28,15 +28,59 @@ public class LocationInfoRepository: ILocationInfoRepository
         
         return result;
     }
-    public async Task<LocationInfo> Add(long animalId, LocationInfo entity)
+
+    public async Task<LocationInfo> Get(long visitedLocationId)
+    {
+        var result = await _db.LocationInfo
+            .Include(x => x.locationPoint)
+            .FirstOrDefaultAsync(x => x.id == visitedLocationId);
+
+        return result;
+    }
+    public async Task<List<LocationInfo>> GetList(long animalId)
+    {
+        var result = _db.LocationInfo
+            .Include(x => x.locationPoint)
+            .Where(x => x.animal.id == animalId).ToList();
+
+        return result;
+    }
+
+    public async Task<LocationInfo> AddToAnimal(long animalId, LocationInfo entity)
     {
         var animal = await _db.Animals.FirstOrDefaultAsync(x => x.id == animalId);
-
-        var result = _db.LocationInfo.Add(entity).Entity;
         
         animal.visitedLocations.Add(entity);
         await _db.SaveChangesAsync();
 
+        return entity;
+    }
+
+    public async Task<LocationInfo> Update(LocationInfo entity)
+    {
+        var result = _db.LocationInfo.Update(entity).Entity;
+        await _db.SaveChangesAsync();
+
         return result;
+    }
+
+    public async Task<bool> Delete(long animalId, long visitedPointId)
+    {
+        var animal = await _db.Animals
+            .Include(x => x.visitedLocations)
+            .Include(x => x.animalTypes)
+            .FirstOrDefaultAsync(x => x.id == animalId);
+        
+        var visitedLoc = animal.visitedLocations.FirstOrDefault(x => x.id == visitedPointId);
+
+        if (visitedLoc != null)
+        {
+            animal.visitedLocations.Remove(visitedLoc);
+            await _db.SaveChangesAsync();
+
+            return true;
+        }
+
+        return false;
     }
 }

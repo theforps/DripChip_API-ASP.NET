@@ -2,10 +2,12 @@
 
 namespace DripChip_API.DAL.Interfaces;
 
-using Domain.DTO.Location;
-
 public interface ILocationInfoRepository
 {
     List<LocationInfo> GetAnimalLocations(long id, int from, int size, DateTime start, DateTime end);
-    Task<LocationInfo> Add(long animalId, LocationInfo entity);
+    Task<LocationInfo> Get(long visitedLocationId);
+    Task<List<LocationInfo>> GetList(long animalId);
+    Task<LocationInfo> AddToAnimal(long animalId, LocationInfo entity);
+    Task<LocationInfo> Update(LocationInfo entity);
+    Task<bool> Delete(long animalId, long visitedPointId);
 }

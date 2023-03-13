@@ -8,7 +8,7 @@ public class LocationInfo
     [Key]
     public long id { get; set; }
     [JsonIgnore]
-    public DateTime dateTimeOfVisitLocationPoint { get; set; }
+    public DateTime dateTimeOfVisitLocationPoint { get; set; } = DateTime.UtcNow;
     [JsonIgnore]
     public Location locationPoint { get; set; }
     [JsonIgnore]

@@ -17,6 +17,7 @@ public class AnimalRepository : IAnimalRepository
     public async Task<Animal> GetById(long id)
     {
         var result = await _db.Animals
+            .AsNoTracking()
             .Include(x => x.visitedLocations)
             .Include(x => x.animalTypes)
             .FirstOrDefaultAsync(x => x.id == id);
