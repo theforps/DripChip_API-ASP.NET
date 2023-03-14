@@ -17,7 +17,6 @@ namespace DripChip_API.Controllers
     [Route("animals")]
     [Authorize]
     [ApiController]
-    
     public class AnimalsController : ControllerBase
     {
         private readonly IAnimalService _animalService;
@@ -80,6 +79,8 @@ namespace DripChip_API.Controllers
         [HttpPost]
         public async Task<ActionResult> Add([FromBody] DTOAnimalAdd entity)
         {
+            
+            
             if (!ModelState.IsValid || !Enum.IsDefined(typeof(Gender), entity.gender))
             {
                 return BadRequest("Данные не валидны");
@@ -105,7 +106,7 @@ namespace DripChip_API.Controllers
                 return Conflict(response.Description);
             }
 
-            return Created("", response.Data);
+            return Created("",response.Data);
         }
 
         [HttpPut("{animalId:long?}")]

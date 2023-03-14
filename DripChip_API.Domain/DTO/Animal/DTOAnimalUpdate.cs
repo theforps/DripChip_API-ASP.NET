@@ -12,7 +12,6 @@ public class DTOAnimalUpdate
     public string lifeStatus { get; set; }
     [Required][Range(1,float.MaxValue)] public int chipperId { get; set; }
     [Required][Range(1,float.MaxValue)] public long chippingLocationId { get; set; }
-    [JsonIgnore]
-    public DateTime deathDateTime { get; set; }
+    [JsonIgnore] public DateTimeOffset? deathDateTime { get; set; } = null;
 }
 

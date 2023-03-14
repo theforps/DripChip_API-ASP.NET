@@ -18,5 +18,5 @@ public class DTOAnimalAdd
     [Required] [Range(1, Int32.MaxValue)] public int chipperId { get; set; } 
     [Required] [Range(1, long.MaxValue)] public long chippingLocationId { get; set; }
     [JsonIgnore] public string lifeStatus = "ALIVE";
-    [JsonIgnore] public DateTime chippingDateTime = DateTime.UtcNow;
+    [JsonIgnore] public DateTimeOffset chippingDateTime = DateTime.UtcNow;
 }

@@ -49,7 +49,11 @@ public class LocationInfoRepository: ILocationInfoRepository
     public async Task<LocationInfo> AddToAnimal(long animalId, LocationInfo entity)
     {
         var animal = await _db.Animals.FirstOrDefaultAsync(x => x.id == animalId);
-        
+
+        if (animal.visitedLocations == null)
+        {
+            animal.visitedLocations = new List<LocationInfo>();
+        }
         animal.visitedLocations.Add(entity);
         await _db.SaveChangesAsync();
 

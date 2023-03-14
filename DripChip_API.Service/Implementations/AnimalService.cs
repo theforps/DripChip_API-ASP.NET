@@ -173,6 +173,7 @@ public class AnimalService : IAnimalService
             }
 
             var animal = _mapper.Map<Animal>(entity);
+            animal.chippingDateTime = entity.chippingDateTime.DateTime;
             if (entity.animalTypes.Any() && entity.animalTypes != null)
                 animal.animalTypes = await _typeRepository.GetTypesById(entity.animalTypes);
 
@@ -242,7 +243,7 @@ public class AnimalService : IAnimalService
             }
             else if (entity.lifeStatus == "DEAD" && checkAnimal.lifeStatus == "ALIVE")
             {
-                entity.deathDateTime = DateTime.UtcNow;
+                entity.deathDateTime = DateTimeOffset.UtcNow;
             }
 
             if (checkAnimal.visitedLocations.Any() && entity.chippingLocationId == checkAnimal.visitedLocations[0].id)
@@ -256,9 +257,13 @@ public class AnimalService : IAnimalService
 
             //берет объект из бд и соединяет с изменениями
             var animalUnity = _mapper.Map(entity, checkAnimal);
+            if (entity.deathDateTime != null)
+                animalUnity.deathDateTime = entity.deathDateTime.Value.DateTime;
 
+            var animal = _mapper.Map<Animal>(animalUnity);
+            
             //обновляет объект
-            var response = await _animalRepository.Update(animalUnity);
+            var response = await _animalRepository.Update(animal);
             
             
             var result = _mapper.Map<DTOAnimal>(response);

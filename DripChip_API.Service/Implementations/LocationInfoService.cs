@@ -121,10 +121,12 @@ public class LocationInfoService:ILocationInfoService
                 };
             }
 
+            var animal = _mapper.Map<Animal>(checkAnimal);
+            
             var locationInfo = new LocationInfo
             {
                 locationPoint = checkLocation,
-                animal = checkAnimal
+                animal = animal
             };
 
             var responseAddLocToAnimal = await _locationInfoRepository.AddToAnimal(animalId, locationInfo);

@@ -21,13 +21,29 @@ public class AnimalMapping : Profile
                 => opt.MapFrom(src => src.animalTypes.Select(y => y.id).ToList()));
         
         CreateMap<DTOAnimal, Animal>()
-            .ForMember(x => x.animalTypes, opt => opt.Ignore())
-            .ForMember(x => x.visitedLocations, opt => opt.Ignore());
+            .ForMember(x 
+                => x.animalTypes, opt => opt.Ignore())
+            .ForMember(x 
+                => x.visitedLocations, opt => opt.Ignore())
+            .ForMember(dest 
+                => dest.chippingDateTime, opt 
+                => opt.MapFrom(src => src.chippingDateTime.DateTime));
 
         CreateMap<DTOAnimalAdd, Animal>()
-            .ForMember(x => x.animalTypes, opt => opt.Ignore());
+            .ForMember(x 
+                => x.animalTypes, opt 
+                => opt.Ignore())
+            .ForMember(dest 
+                => dest.chippingDateTime, opt 
+                => opt.Ignore());
 
         CreateMap<DTOAnimalUpdate, Animal>()
+            .ForMember(dest 
+                => dest.chippingDateTime, opt 
+                => opt.Ignore())
+            .ForMember(dest 
+                => dest.deathDateTime, opt 
+                => opt.Ignore())
             .ForAllMembers(o => 
                 o.Condition((source, destination, member) => member != null));
     }

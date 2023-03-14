@@ -9,9 +9,9 @@ public class DTOAnimal
     public float height { get; set; }
     public string gender { get; set; }
     public string lifeStatus { get; set; }
-    public DateTime chippingDateTime { get; set; }
+    public DateTimeOffset chippingDateTime { get; set; }
     public int chipperId { get; set; }
     public long chippingLocationId { get; set; }
     public List<long> visitedLocations { get; set; }
-    public DateTime? deathDateTime { get; set; }
+    public DateTimeOffset? deathDateTime { get; set; }
 }

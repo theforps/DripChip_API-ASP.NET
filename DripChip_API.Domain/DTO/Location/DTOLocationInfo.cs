@@ -3,6 +3,6 @@
 public class DTOLocationInfo
 {
     public long id { get; set; }
-    public DateTime dateTimeOfVisitLocationPoint { get; set; } = DateTime.UtcNow;
+    public DateTimeOffset dateTimeOfVisitLocationPoint { get; set; } = DateTime.UtcNow;
     public long locationPointId { get; set; }
 }

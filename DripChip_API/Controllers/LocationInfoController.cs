@@ -17,6 +17,7 @@ namespace DripChip_API.Controllers
     [Route("animals")]
     [ApiController]
     [Authorize]
+    [Produces("application/json")]
     public class LocationInfoController : ControllerBase
     {
         private readonly ILocationInfoService _locationInfoService;
