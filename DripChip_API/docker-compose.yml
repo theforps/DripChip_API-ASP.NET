@@ -1,13 +1,24 @@
 ﻿version: '3.9'
 
 services:
+  webapi:
+    image: webapi
+    build:
+      context: .
+      dockerfile: ../../DripChip_API-ASP.NET/Dockerfile
+    ports:
+      - "8888:80"
+
   tests:
     image: mrexpen/planet_olymp_phase1
     pull_policy: always
     ports:
       - "8090:8080"
+    depends_on:
+      - webapi
     environment:
-      SERVER_URL: http://localhost:5215
+      SERVER_URL: http://webapi:80
       STAGE: all
-    
-  
+      
+      
+      
