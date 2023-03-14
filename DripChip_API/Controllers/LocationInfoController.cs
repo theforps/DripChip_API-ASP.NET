@@ -39,7 +39,7 @@ namespace DripChip_API.Controllers
             
             if (response.StatusCode == Domain.Enums.StatusCode.LocationStoryNotFound)
             {
-                return BadRequest(response.Description);
+                return NotFound(response.Description);
             }
             else if (response.StatusCode == Domain.Enums.StatusCode.AnimalNotFound)
             {

@@ -11,7 +11,7 @@ namespace DripChip_API.Controllers
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [Route("location")]
+    [Route("locations")]
     [Authorize]
     [ApiController]
     public class LocationsController : ControllerBase
@@ -49,7 +49,8 @@ namespace DripChip_API.Controllers
         [HttpPost]
         public async Task<ActionResult> AddLocation([FromBody] DTOLocation location)
         {
-            if (!ModelState.IsValid)
+            if (!(location.latitude <= 90 && location.latitude >= -90) ||
+                !(location.longitude <= 180 && location.longitude >= -180))
             {
                 return BadRequest("Невалидные данные");
             }
@@ -72,7 +73,9 @@ namespace DripChip_API.Controllers
         [HttpPut("{pointId:long?}")]
         public async Task<ActionResult> UpdateLoc(long pointId,[FromBody] DTOLocation location)
         {
-            if (!ModelState.IsValid || pointId <= 0)
+            if (!(location.latitude <= 90 && location.latitude >= -90) ||
+                !(location.longitude <= 180 && location.longitude >= -180) || 
+                pointId <= 0)
             {
                 return BadRequest("Невалидные данные");
             }

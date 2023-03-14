@@ -7,11 +7,11 @@ public class DTOAnimalAdd
 {
     [Required] public List<long> animalTypes { get; set; }
 
-    [Required] [Range(1, float.MaxValue)] public float weight { get; set; } 
+    [Required] [Range(0.001, float.MaxValue)] public float weight { get; set; } 
 
-    [Required] [Range(1, float.MaxValue)] public float length { get; set; } 
+    [Required] [Range(0.001, float.MaxValue)] public float length { get; set; } 
 
-    [Required] [Range(1, float.MaxValue)] public float height { get; set; } 
+    [Required] [Range(0.001, float.MaxValue)] public float height { get; set; } 
 
     [Required] public string gender { get; set; } 
 

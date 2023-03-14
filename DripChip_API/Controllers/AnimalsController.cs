@@ -67,10 +67,14 @@ namespace DripChip_API.Controllers
 
             if (response.StatusCode == Domain.Enums.StatusCode.AnimalNotFound)
             {
-                return BadRequest(response.Description);
+                //return BadRequest(response.Description);
             }
 
-            return Ok(response.Data);
+            if (response.Data != null)
+            {
+                return Ok(response.Data);
+            }
+            return Ok();
         }
 
         [HttpPost]

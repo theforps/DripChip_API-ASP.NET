@@ -173,7 +173,8 @@ public class AnimalService : IAnimalService
             }
 
             var animal = _mapper.Map<Animal>(entity);
-            animal.animalTypes = await _typeRepository.GetTypesById(entity.animalTypes);
+            if (entity.animalTypes.Any() && entity.animalTypes != null)
+                animal.animalTypes = await _typeRepository.GetTypesById(entity.animalTypes);
 
             var response = await _animalRepository.Add(animal);
 

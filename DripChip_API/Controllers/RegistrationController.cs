@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DripChip_API.Controllers
 {
-    [Route("register")]
+    [Route("registration")]
     [ApiController]
     public class RegistrationController : ControllerBase
     {
