@@ -8,6 +8,21 @@ services:
       dockerfile: ../../DripChip_API-ASP.NET/Dockerfile
     ports:
       - "8888:80"
+    depends_on:
+      - database
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/animal-chipization
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+
+  database:
+    image: postgres:latest
+    volumes:
+      - /var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=animal-chipization
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
 
   tests:
     image: mrexpen/planet_olymp_phase1
