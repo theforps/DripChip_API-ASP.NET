@@ -13,15 +13,12 @@ public class ApplicationDbContext :DbContext
 
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base(options)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        
         Database.EnsureCreated();
     }
-    
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlite("Filename=..\\DripChip_API.DAL\\Data\\DripChip.sqlite");
-    }
-    
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+    override protected void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Animal>()
             .HasMany(x => x.animalTypes)

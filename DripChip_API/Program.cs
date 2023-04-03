@@ -24,7 +24,7 @@ namespace Drip_chip_API
             builder.Services.AddAuthorization();
             
             builder.Services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlite("Name=DefaultConnection"));
+                options => options.UseNpgsql("Name=DefaultConnection"));
             
             builder.Services.AddEndpointsApiExplorer();
             
