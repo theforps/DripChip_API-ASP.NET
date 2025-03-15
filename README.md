@@ -1,4 +1,4 @@
-# Drip_chip_API
+# Drip-Chip
 
 Our company "Drip-Chip” is engaged in chipping animals in the country “Wonderland” to track their movement and life cycles. The movement of animals around the planet is extremely important, including to protect them from death.
 
