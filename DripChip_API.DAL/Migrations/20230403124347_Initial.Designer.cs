@@ -5,70 +5,77 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace DripChipAPI.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230219103105_addTables")]
-    partial class addTables
+    [Migration("20230403124347_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.2");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("AnimalLocationInfo", b =>
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("AnimalTypes", b =>
                 {
-                    b.Property<long>("Animalsid")
-                        .HasColumnType("INTEGER");
+                    b.Property<long>("animalTypesid")
+                        .HasColumnType("bigint");
 
-                    b.Property<long>("visitedLocationsid")
-                        .HasColumnType("INTEGER");
+                    b.Property<long>("animalsid")
+                        .HasColumnType("bigint");
 
-                    b.HasKey("Animalsid", "visitedLocationsid");
+                    b.HasKey("animalTypesid", "animalsid");
 
-                    b.HasIndex("visitedLocationsid");
+                    b.HasIndex("animalsid");
 
-                    b.ToTable("AnimalLocationInfo");
+                    b.ToTable("AnimalTypes");
                 });
 
             modelBuilder.Entity("DripChip_API.Domain.Models.Animal", b =>
                 {
                     b.Property<long>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("id"));
 
                     b.Property<int>("chipperId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("chippingDateTime")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<long>("chippingLocationId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("deathDateTime")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("gender")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<float>("height")
-                        .HasColumnType("REAL");
+                        .HasColumnType("real");
 
                     b.Property<float>("length")
-                        .HasColumnType("REAL");
+                        .HasColumnType("real");
 
                     b.Property<string>("lifeStatus")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<float>("weight")
-                        .HasColumnType("REAL");
+                        .HasColumnType("real");
 
                     b.HasKey("id");
 
@@ -79,13 +86,15 @@ namespace DripChipAPI.DAL.Migrations
                 {
                     b.Property<long>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("id"));
 
                     b.Property<double>("latitude")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double precision");
 
                     b.Property<double>("longitude")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double precision");
 
                     b.HasKey("id");
 
@@ -96,17 +105,24 @@ namespace DripChipAPI.DAL.Migrations
                 {
                     b.Property<long>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("id"));
+
+                    b.Property<long>("animalid")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("dateTimeOfVisitLocationPoint")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<long>("locationPointIdid")
-                        .HasColumnType("INTEGER");
+                    b.Property<long>("locationPointid")
+                        .HasColumnType("bigint");
 
                     b.HasKey("id");
 
-                    b.HasIndex("locationPointIdid");
+                    b.HasIndex("animalid");
+
+                    b.HasIndex("locationPointid");
 
                     b.ToTable("LocationInfo");
                 });
@@ -115,18 +131,15 @@ namespace DripChipAPI.DAL.Migrations
                 {
                     b.Property<long>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint");
 
-                    b.Property<long?>("Animalid")
-                        .HasColumnType("INTEGER");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("id"));
 
                     b.Property<string>("type")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("id");
-
-                    b.HasIndex("Animalid");
 
                     b.ToTable("Types");
                 });
@@ -135,65 +148,68 @@ namespace DripChipAPI.DAL.Migrations
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
                     b.Property<string>("email")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("firstName")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("lastName")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("password")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("id");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("AnimalLocationInfo", b =>
+            modelBuilder.Entity("AnimalTypes", b =>
                 {
-                    b.HasOne("DripChip_API.Domain.Models.Animal", null)
+                    b.HasOne("DripChip_API.Domain.Models.Types", null)
                         .WithMany()
-                        .HasForeignKey("Animalsid")
+                        .HasForeignKey("animalTypesid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DripChip_API.Domain.Models.LocationInfo", null)
+                    b.HasOne("DripChip_API.Domain.Models.Animal", null)
                         .WithMany()
-                        .HasForeignKey("visitedLocationsid")
+                        .HasForeignKey("animalsid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("DripChip_API.Domain.Models.LocationInfo", b =>
                 {
-                    b.HasOne("DripChip_API.Domain.Models.Location", "locationPointId")
-                        .WithMany()
-                        .HasForeignKey("locationPointIdid")
+                    b.HasOne("DripChip_API.Domain.Models.Animal", "animal")
+                        .WithMany("visitedLocations")
+                        .HasForeignKey("animalid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("locationPointId");
-                });
+                    b.HasOne("DripChip_API.Domain.Models.Location", "locationPoint")
+                        .WithMany()
+                        .HasForeignKey("locationPointid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("DripChip_API.Domain.Models.Types", b =>
-                {
-                    b.HasOne("DripChip_API.Domain.Models.Animal", null)
-                        .WithMany("animalTypes")
-                        .HasForeignKey("Animalid");
+                    b.Navigation("animal");
+
+                    b.Navigation("locationPoint");
                 });
 
             modelBuilder.Entity("DripChip_API.Domain.Models.Animal", b =>
                 {
-                    b.Navigation("animalTypes");
+                    b.Navigation("visitedLocations");
                 });
 #pragma warning restore 612, 618
         }
